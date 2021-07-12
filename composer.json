@@ -1,0 +1,17 @@
+{
+	"name": "canadasatellite/bambora"
+	,"version": "0.0.1"
+	,"description": "The Bambora North America (Beamstream) payment module for canadasatellite.ca (Magento 2)"
+	,"type": "magento2-module"
+	,"homepage": "https://github.com/canadasatellite-ca/bambora"
+	,"license": "MIT"
+	,"authors": [{
+		"name": "Dmitry Fedyuk"
+		,"email": "admin@mage2.pro"
+		,"homepage": "https://mage2.pro/users/dmitry_fedyuk"
+		,"role": "Developer"
+	}]
+	,"require": {"mage2pro/core": ">=7.6.3"}
+	,"autoload": {"files": ["registration.php"], "psr-4": {"CanadaSatellite\\Bambora\\": ""}}
+	,"keywords": ["Magento 2"]
+}
