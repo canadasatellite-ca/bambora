@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<payment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/payment.xsd">
+    <methods>
+        <method name="beanstream">
+            <allow_multiple_address>1</allow_multiple_address>
+        </method>
+    </methods>
+    <groups>
+        <group id="schogini">
+            <label>Schogini</label>
+        </group>
+    </groups>
+    <credit_cards>
+      <type id="VI" order="1"><label>Visa</label></type>
+      <type id="MC" order="2"><label>MasterCard</label></type>
+      <type id="AE" order="3"><label>American Express</label></type>
+      <type id="DI" order="4"><label>Discover</label></type>
+      <type id="DC" order="5"><label>DinersCard</label></type>
+    </credit_cards>
+</payment>
+

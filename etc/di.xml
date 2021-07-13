@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Magento\Checkout\Model\GuestPaymentInformationManagement" type="CanadaSatellite\Bambora\Model\GuestPaymentManagement" />
+    <preference for="Magento\Checkout\Model\PaymentInformationManagement" type="CanadaSatellite\Bambora\Model\PaymentManagement" />
+    <type name="CanadaSatellite\Bambora\Model\Logger\Handler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="CanadaSatellite\Bambora\Model\Logger\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">beanstream</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">CanadaSatellite\Bambora\Model\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

@@ -1,0 +1,2 @@
+<?php
+namespace CanadaSatellite\Bambora\Model\Source; class Cctype extends \Magento\Payment\Model\Source\Cctype { function toOptionArray() { $sp190385 = array(array('value' => 'VI', 'label' => 'VISA'), array('value' => 'MC', 'label' => 'MasterCard'), array('value' => 'AE', 'label' => 'American Express'), array('value' => 'DI', 'label' => 'Discover'), array('value' => 'OT', 'label' => 'Others')); return $sp190385; } }
