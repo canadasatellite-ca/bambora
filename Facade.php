@@ -108,7 +108,6 @@ final class Facade {
 		$res = new _DO;
 		$reqA = $req->getData();
 		$resA2 = [
-			10 => 'CC',
 			11 => 'auth_only',
 			12 => '',
 			13 => 'Sreeprakash',
@@ -167,7 +166,6 @@ final class Facade {
 			66 => '',
 			67 => ''
 		];
-		$resA2[10] = null;
 		$resA2[11] = $type;
 		$resA2[12] = $reqA['x_cust_id'];
 		$resA2[13] = $reqA['x_first_name'];
@@ -213,7 +211,7 @@ final class Facade {
 		$res->setInvoiceNumber($reqA['x_invoice_num']);
 		$res->setDescription('');
 		$res->setAmount($reqA[self::$AMOUNT]);
-		$res->setMethod($resA2[10]);
+		$res->setMethod(null);
 		$res->setTransactionType($resA2[11]);
 		$res->setCustomerId($resA2[12]);
 		$res->setMd5Hash($resA2[37]);
