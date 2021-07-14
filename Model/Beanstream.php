@@ -301,8 +301,6 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 * @throws LE
 	 */
 	private function beanstreamapi(array $reqA, $type) {
-		$merchantName = $this->getConfigData('merchant_username');
-		$merchantPassword = $this->getConfigData('merchant_password');
 		$reqA['x_state'] = dftr($reqA['x_state'], Regions::ca());
 		if ($reqA[self::$COUNTRY] == '') {
 			if ($reqA['x_state'] != '') {
@@ -363,7 +361,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 			,'ordPhoneNumber' => $reqA['x_phone']
 			,'ordPostalCode' => $reqA['x_zip']
 			,'ordProvince' => $reqA['x_state']
-			,'password' => $merchantPassword
+			,'password' => $this->getConfigData('merchant_password')
 			,'requestType' => 'BACKEND'
 			,'trnAmount' => $reqA[self::$X_AMOUNT]
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
@@ -380,7 +378,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 			,'trnExpYear' => $reqA[self::$CARD_EXP_YEAR]
 			,'trnOrderNumber' => $reqA['x_invoice_num']
 			,'trnType' => $trnType
-			,'username' => $merchantName
+			,'username' => $this->getConfigData('merchant_username')
 		] + $query2); /** @var string $query */
 		$curl = curl_init();
 		# 2021-07-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
