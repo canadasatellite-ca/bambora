@@ -20,7 +20,7 @@ final class Facade {
 	 * @param float|string $a
 	 * @return _DO
 	 */
-	function buildRequest($type, $a) {
+	function build($type, $a) {
 		$i = $this->ii(); /** @var II|OP $i */
 		$o = $i->getOrder(); /** @var O $o */
 		$req = new _DO;
@@ -104,7 +104,7 @@ final class Facade {
 	 * @return mixed
 	 * @throws LE
 	 */
-	function postRequest(_DO $req, $type) {
+	function post(_DO $req, $type) {
 		$res = new _DO;
 		$reqA = $req->getData();
 		$resA2 = [
@@ -260,7 +260,7 @@ final class Facade {
 
 	/**
 	 * 2021-06-29
-	 * @used-by postRequest()
+	 * @used-by post()
 	 * @param array(string => mixed) $reqA
 	 * @param string $type
 	 * @return array
@@ -435,7 +435,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-14
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @param string|null $k [optional]
 	 * @return II|I|OP|QP
 	 */
@@ -477,7 +477,7 @@ final class Facade {
 	/**
 	 * 2021-07-01
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
 	 * @var string
 	 */
@@ -485,7 +485,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-01
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
 	 * @var string
 	 */
@@ -494,7 +494,7 @@ final class Facade {
 	/**
 	 * 2021-07-01
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
 	 * @var string
 	 */
@@ -503,8 +503,8 @@ final class Facade {
 	/**
 	 * 2021-07-07
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
-	 * @used-by postRequest()
+	 * @used-by build()
+	 * @used-by post()
 	 * @var string
 	 */
 	private static $AMOUNT = 'amount';
@@ -512,7 +512,7 @@ final class Facade {
 	/**
 	 * 2021-07-07
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @var string
 	 */
 	private static $CARD_EXP_MONTH = 'card_exp_month';
@@ -520,7 +520,7 @@ final class Facade {
 	/**
 	 * 2021-07-07
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @var string
 	 */
 	private static $CARD_EXP_YEAR = 'card_exp_year';
@@ -528,7 +528,7 @@ final class Facade {
 	/**
 	 * 2021-07-07
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @var string
 	 */
 	private static $CARD_NUMBER = 'card_number';
@@ -536,8 +536,8 @@ final class Facade {
 	/**
 	 * 2021-07-07
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
-	 * @used-by postRequest()
+	 * @used-by build()
+	 * @used-by post()
 	 * @var string
 	 */
 	private static $COUNTRY = 'country';
@@ -545,7 +545,7 @@ final class Facade {
 	/**
 	 * 2021-07-07
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
+	 * @used-by build()
 	 * @var string
 	 */
 	private static $CVV = 'cvv';
@@ -553,8 +553,8 @@ final class Facade {
 	/**
 	 * 2021-07-14
 	 * @used-by beanstreamapi()
-	 * @used-by buildRequest()
-	 * @used-by postRequest()
+	 * @used-by build()
+	 * @used-by post()
 	 * @var string
 	 */
 	private static $STATE = 'state';

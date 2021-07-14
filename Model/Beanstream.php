@@ -48,8 +48,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 */
 	function authorize(II $i, $a) {
 		$m = false; /** @var string|false $m */
-		$req = $this->f()->buildRequest(F::AUTH_ONLY, $a); /** @var _DO $req */
-		$res = $this->f()->postRequest($req, F::AUTH_ONLY); /** @var _DO $res */
+		$req = $this->f()->build(F::AUTH_ONLY, $a); /** @var _DO $req */
+		$res = $this->f()->post($req, F::AUTH_ONLY); /** @var _DO $res */
 		$i->setCcApproval($res->getApprovalCode())->setLastTransId($res->getTransactionId())->setCcTransId($res->getTransactionId())->setCcAvsStatus($res->getAvsResultCode())->setCcCidStatus($res->getCardCodeResponseCode());
 		$reasonC = $res->getResponseReasonCode();
 		$reasonS = $res->getResponseReasonText();
@@ -95,8 +95,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		$m = false; /** @var string|false $m */
 		$type = $i->getParentTransactionId() ? F::PRIOR_AUTH_CAPTURE : F::AUTH_CAPTURE; /** @var string $type */
 		/** @var _DO $req */
-		$req = $this->f()->buildRequest($type, $a);
-		$res = $this->f()->postRequest($req, $type); /** @var _DO $res */
+		$req = $this->f()->build($type, $a);
+		$res = $this->f()->post($req, $type); /** @var _DO $res */
 		if ($res->getResponseCode() == self::$APPROVED) {
 			$i->setStatus(self::STATUS_APPROVED);
 			$i->setCcTransId($res->getTransactionId());
@@ -168,8 +168,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		$m = false; /** @var Phrase|string|false $m */
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$req = $this->f()->buildRequest(F::REFUND, $a);
-		$res = $this->f()->postRequest($req, F::REFUND);
+		$req = $this->f()->build(F::REFUND, $a);
+		$res = $this->f()->post($req, F::REFUND);
 		if ($res->getResponseCode() == self::$APPROVED) {
 			$i->setStatus(self::STATUS_SUCCESS);
 			if ($res->getTransactionId() != $parentId) {
@@ -231,8 +231,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	function void(II $i) {
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$req = $this->f()->buildRequest(F::VOID,  $i->getAmountAuthorized());
-		$res = $this->f()->postRequest($req, F::VOID);
+		$req = $this->f()->build(F::VOID,  $i->getAmountAuthorized());
+		$res = $this->f()->post($req, F::VOID);
 		if (self::$APPROVED != $res->getResponseCode()) {
 			self::err($res->getResponseReasonText());
 		}
