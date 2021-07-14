@@ -60,7 +60,7 @@ final class Facade {
 			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
 			$subtotal = $o->getSubtotal(); /** @var float $subtotal */
 			if (!empty($sa)) {
-				$req->setXShipToFirstName($sa->getFirstname());
+				$req[self::$SHIP_TO_FIRST_NAME] = $sa->getFirstname();
 				$req->setXShipToLastName($sa->getLastname());
 				$req->setXShipToCompany($sa->getCompany());
 				$req->setXShipToAddress($sa->getStreet(1)[0]);
@@ -107,9 +107,7 @@ final class Facade {
 	function post(_DO $req, $type) {
 		$res = new _DO;
 		$reqA = $req->getData();
-		$resA2 = [];
-		$reqA['x_ship_to_first_name'] = !isset($reqA['x_ship_to_first_name']) ? $reqA['x_first_name'] : $reqA['x_ship_to_first_name'];
-		$reqA['x_ship_to_first_name'] = !isset($reqA['x_ship_to_first_name']) ? $reqA['x_first_name'] : $reqA['x_ship_to_first_name'];
+		$reqA[self::$SHIP_TO_FIRST_NAME] = !isset($reqA[self::$SHIP_TO_FIRST_NAME]) ? $reqA['x_first_name'] : $reqA[self::$SHIP_TO_FIRST_NAME];
 		$reqA['x_ship_to_last_name'] = !isset($reqA['x_ship_to_last_name']) ? $reqA['x_last_name'] : $reqA['x_ship_to_last_name'];
 		$reqA['x_ship_to_company'] = !isset($reqA['x_ship_to_company']) ? $reqA['x_company'] : $reqA['x_ship_to_company'];
 		$reqA['x_ship_to_address'] = !isset($reqA['x_ship_to_address']) ? $reqA['x_address'] : $reqA['x_ship_to_address'];
@@ -434,6 +432,14 @@ final class Facade {
 	 * @var string
 	 */
 	private static $CVV = 'cvv';
+
+	/**
+	 * 2021-07-14
+	 * @used-by build()
+	 * @used-by post()
+	 * @var string
+	 */
+	private static $SHIP_TO_FIRST_NAME = 'ship_to_first_name';
 
 	/**
 	 * 2021-07-14
