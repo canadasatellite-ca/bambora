@@ -302,20 +302,13 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 */
 	private function beanstreamapi(array $reqA, $type) {
 		$state = dftr($reqA[self::$STATE], Regions::ca()); /** @var string $state */
-		if ($reqA[self::$COUNTRY] == '') {
-			if ($state) {
-				if (dfa(Regions::ca(), $state)) {
-					$reqA[self::$COUNTRY] = 'CA';
-				}
-				elseif (dfa(Regions::us(), $state)) {
-					$reqA[self::$COUNTRY] = 'US';
-				}
-			}
-		}
-		if ($reqA[self::$COUNTRY] == 'US') {
+		$country = $reqA[self::$COUNTRY] ?: (!$state ? null : (
+			dfa(Regions::ca(), $state) ? 'CA' : (dfa(Regions::us(), $state) ? 'US' : null)
+		)); /** @var string $country */
+		if ('US' === $country) {
 			$state = dftr($state, Regions::us());
 		}
-		if ($reqA[self::$COUNTRY] != 'US' && $reqA[self::$COUNTRY] != 'CA') {
+		if (!in_array($country, ['CA', 'US'])) {
 			$state = '--';
 		}
 		$trnType = 'P';
@@ -355,7 +348,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 			,'ordAddress1' => $reqA['x_address']
 			,'ordAddress2' => ''
 			,'ordCity' => $reqA['x_city']
-			,'ordCountry' => $reqA[self::$COUNTRY]
+			,'ordCountry' => $country
 			,'ordEmailAddress' => $reqA['x_email']
 			,'ordName' => df_cc_s($reqA['x_first_name'], $reqA['x_last_name'])
 			,'ordPhoneNumber' => $reqA['x_phone']
