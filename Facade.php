@@ -133,7 +133,6 @@ final class Facade {
 			35 => '',
 			36 => '',
 			38 => '',
-			39 => '',
 			40 => '',
 			41 => '',
 			42 => '',
@@ -191,9 +190,7 @@ final class Facade {
 		$resA2[29] = $reqA['x_ship_to_state'];
 		$resA2[30] = $reqA['x_ship_to_zip'];
 		$resA2[31] = $reqA['x_ship_to_country'];
-		$resA2[39] = '';
 		$resA = $this->beanstreamapi($reqA, $type); /** @var array(string => mixed) $resA */
-		$resA2[39] = $resA['card_code_response'];
 		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
 		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
 		$res->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
@@ -208,7 +205,7 @@ final class Facade {
 		$res->setTransactionType($type);
 		$res->setCustomerId($reqA['x_cust_id']);
 		$res->setMd5Hash($resA['md5_hash']);
-		$res->setCardCodeResponseCode($resA2[39]);
+		$res->setCardCodeResponseCode($resA['card_code_response']);
 		return $res;
 	}
 
