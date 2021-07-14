@@ -1,5 +1,6 @@
 <?php
 namespace CanadaSatellite\Bambora\Model;
+use CanadaSatellite\Bambora\Regions;
 use Magento\Framework\DataObject as _DO;
 use Magento\Framework\Exception\LocalizedException as LE;
 use Magento\Framework\ObjectManager\NoninterceptableInterface as INonInterceptable;
@@ -302,100 +303,19 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	private function beanstreamapi(array $reqA, $type) {
 		$merchantName = $this->getConfigData('merchant_username');
 		$merchantPassword = $this->getConfigData('merchant_password');
-		$reqA['x_state'] = dftr($reqA['x_state'], $statesCA = [
-			 'Alberta' => 'AB'
-			 ,'British Columbia' => 'BC'
-			 ,'Manitoba' => 'MB'
-			 ,'New Brunswick' => 'NB'
-			 ,'Newfoundland and Labrador' => 'NL'
-			 ,'Northwest Territories' => 'NT'
-			 ,'Nova Scotia' => 'NS'
-			 ,'Nunavut' => 'NU'
-			 ,'Ontario' => 'ON'
-			 ,'Prince Edward Island' => 'PE'
-			 ,'Quebec' => 'QC'
-			 ,'Saskatchewan' => 'SK'
-			 ,'Yukon Territory' => 'YT'
-		]); /** @var array(string => string) $statesCA */
-		$statesUS = [
-			'Alabama' => 'AL'
-			,'Alaska' => 'AK'
-			,'American Samoa' => 'AS'
-			,'Arizona' => 'AZ'
-			,'Arkansas' => 'AR'
-			,'Armed Forces Africa' => 'AF'
-			,'Armed Forces Americas' => 'AA'
-			,'Armed Forces Canada' => 'AC'
-			,'Armed Forces Europe' => 'AE'
-			,'Armed Forces Middle East' => 'AM'
-			,'Armed Forces Pacific' => 'AP'
-			,'California' => 'CA'
-			,'Colorado' => 'CO'
-			,'Connecticut' => 'CT'
-			,'Delaware' => 'DE'
-			,'District of Columbia' => 'DC'
-			,'Federated States Of Micronesia' => 'FM'
-			,'Florida' => 'FL'
-			,'Georgia' => 'GA'
-			,'Guam' => 'GU'
-			,'Hawaii' => 'HI'
-			,'Idaho' => 'ID'
-			,'Illinois' => 'IL'
-			,'Indiana' => 'IN'
-			,'Iowa' => 'IA'
-			,'Kansas' => 'KS'
-			,'Kentucky' => 'KY'
-			,'Louisiana' => 'LA'
-			,'Maine' => 'ME'
-			,'Marshall Islands' => 'MH'
-			,'Maryland' => 'MD'
-			,'Massachusetts' => 'MA'
-			,'Michigan' => 'MI'
-			,'Minnesota' => 'MN'
-			,'Mississippi' => 'MS'
-			,'Missouri' => 'MO'
-			,'Montana' => 'MT'
-			,'Nebraska' => 'NE'
-			,'Nevada' => 'NV'
-			,'New Hampshire' => 'NH'
-			,'New Jersey' => 'NJ'
-			,'New Mexico' => 'NM'
-			,'New York' => 'NY'
-			,'North Carolina' => 'NC'
-			,'North Dakota' => 'ND'
-			,'Northern Mariana Islands' => 'MP'
-			,'Ohio' => 'OH'
-			,'Oklahoma' => 'OK'
-			,'Oregon' => 'OR'
-			,'Palau' => 'PW'
-			,'Pennsylvania' => 'PA'
-			,'Puerto Rico' => 'PR'
-			,'Rhode Island' => 'RI'
-			,'South Carolina' => 'SC'
-			,'South Dakota' => 'SD'
-			,'Tennessee' => 'TN'
-			,'Texas' => 'TX'
-			,'Utah' => 'UT'
-			,'Vermont' => 'VT'
-			,'Virgin Islands' => 'VI'
-			,'Virginia' => 'VA'
-			,'Washington' => 'WA'
-			,'West Virginia' => 'WV'
-			,'Wisconsin' => 'WI'
-			,'Wyoming' => 'WY'			
-		];
+		$reqA['x_state'] = dftr($reqA['x_state'], Regions::ca());
 		if ($reqA[self::$COUNTRY] == '') {
 			if ($reqA['x_state'] != '') {
 				if (isset($statesCA[$reqA['x_state']])) {
 					$reqA[self::$COUNTRY] = 'CA';
 				}
-				elseif (isset($statesUS[$reqA['x_state']])) {
+				elseif (dfa(Regions::us(), $reqA['x_state'])) {
 					$reqA[self::$COUNTRY] = 'US';
 				}
 			}
 		}
 		if ($reqA[self::$COUNTRY] == 'US') {
-			$reqA['x_state'] = dftr($reqA['x_state'], $statesUS);
+			$reqA['x_state'] = dftr($reqA['x_state'], Regions::us());
 		}
 		if ($reqA[self::$COUNTRY] != 'US' && $reqA[self::$COUNTRY] != 'CA') {
 			$reqA['x_state'] = '--';
