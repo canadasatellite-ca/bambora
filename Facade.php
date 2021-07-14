@@ -108,7 +108,6 @@ final class Facade {
 		$res = new _DO;
 		$reqA = $req->getData();
 		$resA2 = [
-			5 => 'P',
 			6 => '0',
 			7 => '100000018',
 			8 => '',
@@ -206,12 +205,10 @@ final class Facade {
 		$resA2[29] = $reqA['x_ship_to_state'];
 		$resA2[30] = $reqA['x_ship_to_zip'];
 		$resA2[31] = $reqA['x_ship_to_country'];
-		$resA2[5] = 'P';
 		$resA2[6] = '0';
 		$resA2[37] = '382065EC3B4C2F5CDC424A730393D2DF';
 		$resA2[39] = '';
 		$resA = $this->beanstreamapi($reqA, $type); /** @var array(string => mixed) $resA */
-		$resA2[5] = $resA['avs_result_code'];
 		$resA2[6] = $resA['transaction_id'];
 		$resA2[37] = $resA['md5_hash'];
 		$resA2[39] = $resA['card_code_response'];
@@ -220,7 +217,7 @@ final class Facade {
 		$res->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
 		$res->setResponseReasonText($resA['response_reason_text']);
 		$res->setApprovalCode($resA['approval_code']);
-		$res->setAvsResultCode($resA2[5]);
+		$res->setAvsResultCode($resA['avs_result_code']);
 		$res->setTransactionId($resA2[6]);
 		$res->setInvoiceNumber($resA2[7]);
 		$res->setDescription($resA2[8]);
