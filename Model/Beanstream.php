@@ -301,22 +301,22 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 * @throws LE
 	 */
 	private function beanstreamapi(array $reqA, $type) {
-		$reqA['x_state'] = dftr($reqA['x_state'], Regions::ca());
+		$state = dftr($reqA[self::$STATE], Regions::ca()); /** @var string $state */
 		if ($reqA[self::$COUNTRY] == '') {
-			if ($reqA['x_state'] != '') {
-				if (isset($statesCA[$reqA['x_state']])) {
+			if ($state) {
+				if (dfa(Regions::ca(), $state)) {
 					$reqA[self::$COUNTRY] = 'CA';
 				}
-				elseif (dfa(Regions::us(), $reqA['x_state'])) {
+				elseif (dfa(Regions::us(), $state)) {
 					$reqA[self::$COUNTRY] = 'US';
 				}
 			}
 		}
 		if ($reqA[self::$COUNTRY] == 'US') {
-			$reqA['x_state'] = dftr($reqA['x_state'], Regions::us());
+			$state = dftr($state, Regions::us());
 		}
 		if ($reqA[self::$COUNTRY] != 'US' && $reqA[self::$COUNTRY] != 'CA') {
-			$reqA['x_state'] = '--';
+			$state = '--';
 		}
 		$trnType = 'P';
 		$query2 = []; /** @var array(string => string) $query2 */
@@ -360,7 +360,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 			,'ordName' => df_cc_s($reqA['x_first_name'], $reqA['x_last_name'])
 			,'ordPhoneNumber' => $reqA['x_phone']
 			,'ordPostalCode' => $reqA['x_zip']
-			,'ordProvince' => $reqA['x_state']
+			,'ordProvince' => $state
 			,'password' => $this->getConfigData('merchant_password')
 			,'requestType' => 'BACKEND'
 			,'trnAmount' => $reqA[self::$X_AMOUNT]
@@ -419,51 +419,51 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 				'request' => $query, 'response parsed' => $spb41165, 'response raw' => $spf8f74c
 			], "error-$errorType");
 		}
-		$spc59ec5 = [];
-		$spc59ec5['response_code'] = '1';
-		$spc59ec5['response_subcode'] = '1';
-		$spc59ec5['response_reason_code'] = '1';
-		$spc59ec5['response_reason_text'] = '(TESTMODE2) This transaction has been approved.';
-		$spc59ec5['approval_code'] = '000000';
-		$spc59ec5['avs_result_code'] = 'P';
-		$spc59ec5['transaction_id'] = '0';
-		$spc59ec5['md5_hash'] = '382065EC3B4C2F5CDC424A730393D2DF';
-		$spc59ec5['card_code_response'] = '';
+		$resA = [];
+		$resA['response_code'] = '1';
+		$resA['response_subcode'] = '1';
+		$resA['response_reason_code'] = '1';
+		$resA['response_reason_text'] = '(TESTMODE2) This transaction has been approved.';
+		$resA['approval_code'] = '000000';
+		$resA['avs_result_code'] = 'P';
+		$resA['transaction_id'] = '0';
+		$resA['md5_hash'] = '382065EC3B4C2F5CDC424A730393D2DF';
+		$resA['card_code_response'] = '';
 		if ($spb41165['trnApproved'] == 1) {
-			$spc59ec5['response_reason_text'] = '';
-			$spc59ec5['response_code'] = '1';
+			$resA['response_reason_text'] = '';
+			$resA['response_code'] = '1';
 			if (isset($spb41165['messageText']) && !empty($spb41165['messageText'])) {
-				$spc59ec5['response_reason_text'] = $spb41165['messageText'];
+				$resA['response_reason_text'] = $spb41165['messageText'];
 			}
 			if (isset($spb41165['messageId']) && !empty($spb41165['messageId'])) {
-				$spc59ec5['response_reason_code'] = $spb41165['messageId'];
+				$resA['response_reason_code'] = $spb41165['messageId'];
 			}
 			if (isset($spb41165['authCode']) && !empty($spb41165['authCode'])) {
-				$spc59ec5['approval_code'] = $spb41165['authCode'];
+				$resA['approval_code'] = $spb41165['authCode'];
 			}
 			if (isset($spb41165['avsResult']) && !empty($spb41165['avsResult'])) {
-				$spc59ec5['avs_result_code'] = $spb41165['avsResult'];
+				$resA['avs_result_code'] = $spb41165['avsResult'];
 			}
 			if (isset($spb41165['trnId']) && !empty($spb41165['trnId'])) {
-				$spc59ec5['transaction_id'] = $spb41165['trnId'];
+				$resA['transaction_id'] = $spb41165['trnId'];
 			}
 		} else {
-			$spc59ec5['response_code'] = '0';
-			$spc59ec5['response_subcode'] = '0';
-			$spc59ec5['response_reason_code'] = '0';
-			$spc59ec5['approval_code'] = '000000';
-			$spc59ec5['avs_result_code'] = 'P';
-			$spc59ec5['transaction_id'] = '0';
-			$spc59ec5['response_reason_text'] = '';
+			$resA['response_code'] = '0';
+			$resA['response_subcode'] = '0';
+			$resA['response_reason_code'] = '0';
+			$resA['approval_code'] = '000000';
+			$resA['avs_result_code'] = 'P';
+			$resA['transaction_id'] = '0';
+			$resA['response_reason_text'] = '';
 			if (isset($spb41165['messageText']) && !empty($spb41165['messageText'])) {
-				$spc59ec5['response_reason_text'] = $spb41165['messageText'];
+				$resA['response_reason_text'] = $spb41165['messageText'];
 			}
 			if (empty($spb41165['errorFields'])) {
 				$spb41165['errorFields'] = 'Transaction has been DECLINED.';
 			}
-			$spc59ec5['response_reason_text'] .= '-' . $spb41165['errorFields'];
+			$resA['response_reason_text'] .= '-' . $spb41165['errorFields'];
 		}
-		return $spc59ec5;
+		return $resA;
 	}
 
 	/**
@@ -500,7 +500,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 				$req->setXCompany($ba->getCompany());
 				$req->setXAddress($ba->getStreet(1)[0]);
 				$req->setXCity($ba->getCity());
-				$req->setXState($ba->getRegion());
+				$req[self::$STATE] = $ba->getRegion();
 				$req->setXZip($ba->getPostcode());
 				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
 				$req->setXPhone($ba->getTelephone());
@@ -565,7 +565,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	private function postRequest(_DO $req, $type) {
 		$res = new _DO;
 		$reqA = $req->getData();
-		$spa81281 = array(
+		$resA2 = [
 			0 => '1',
 			1 => '1',
 			2 => '1',
@@ -634,78 +634,78 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 			65 => '',
 			66 => '',
 			67 => ''
-		);
-		$spa81281[7] = $reqA['x_invoice_num'];
-		$spa81281[8] = '';
-		$spa81281[9] = $reqA[self::$X_AMOUNT];
-		$spa81281[10] = null;
-		$spa81281[11] = $type;
-		$spa81281[12] = $reqA['x_cust_id'];
-		$spa81281[13] = $reqA['x_first_name'];
-		$spa81281[14] = $reqA['x_last_name'];
-		$spa81281[15] = $reqA['x_company'];
-		$spa81281[16] = $reqA['x_address'];
-		$spa81281[17] = $reqA['x_city'];
-		$spa81281[18] = $reqA['x_state'];
-		$spa81281[19] = $reqA['x_zip'];
-		$spa81281[20] = $reqA[self::$COUNTRY];
-		$spa81281[21] = $reqA['x_phone'];
-		$spa81281[22] = $reqA['x_fax'];
-		$spa81281[23] = '';
+		];
+		$resA2[7] = $reqA['x_invoice_num'];
+		$resA2[8] = '';
+		$resA2[9] = $reqA[self::$X_AMOUNT];
+		$resA2[10] = null;
+		$resA2[11] = $type;
+		$resA2[12] = $reqA['x_cust_id'];
+		$resA2[13] = $reqA['x_first_name'];
+		$resA2[14] = $reqA['x_last_name'];
+		$resA2[15] = $reqA['x_company'];
+		$resA2[16] = $reqA['x_address'];
+		$resA2[17] = $reqA['x_city'];
+		$resA2[18] = $reqA[self::$STATE];
+		$resA2[19] = $reqA['x_zip'];
+		$resA2[20] = $reqA[self::$COUNTRY];
+		$resA2[21] = $reqA['x_phone'];
+		$resA2[22] = $reqA['x_fax'];
+		$resA2[23] = '';
 		$reqA['x_ship_to_first_name'] = !isset($reqA['x_ship_to_first_name']) ? $reqA['x_first_name'] : $reqA['x_ship_to_first_name'];
 		$reqA['x_ship_to_first_name'] = !isset($reqA['x_ship_to_first_name']) ? $reqA['x_first_name'] : $reqA['x_ship_to_first_name'];
 		$reqA['x_ship_to_last_name'] = !isset($reqA['x_ship_to_last_name']) ? $reqA['x_last_name'] : $reqA['x_ship_to_last_name'];
 		$reqA['x_ship_to_company'] = !isset($reqA['x_ship_to_company']) ? $reqA['x_company'] : $reqA['x_ship_to_company'];
 		$reqA['x_ship_to_address'] = !isset($reqA['x_ship_to_address']) ? $reqA['x_address'] : $reqA['x_ship_to_address'];
 		$reqA['x_ship_to_city'] = !isset($reqA['x_ship_to_city']) ? $reqA['x_city'] : $reqA['x_ship_to_city'];
-		$reqA['x_ship_to_state'] = !isset($reqA['x_ship_to_state']) ? $reqA['x_state'] : $reqA['x_ship_to_state'];
+		$reqA['x_ship_to_state'] = !isset($reqA['x_ship_to_state']) ? $reqA[self::$STATE] : $reqA['x_ship_to_state'];
 		$reqA['x_ship_to_zip'] = !isset($reqA['x_ship_to_zip']) ? $reqA['x_zip'] : $reqA['x_ship_to_zip'];
 		$reqA['x_ship_to_country'] = !isset($reqA['x_ship_to_country']) ? $reqA[self::$COUNTRY] : $reqA['x_ship_to_country'];
-		$spa81281[24] = $reqA['x_ship_to_first_name'];
-		$spa81281[25] = $reqA['x_ship_to_last_name'];
-		$spa81281[26] = $reqA['x_ship_to_company'];
-		$spa81281[27] = $reqA['x_ship_to_address'];
-		$spa81281[28] = $reqA['x_ship_to_city'];
-		$spa81281[29] = $reqA['x_ship_to_state'];
-		$spa81281[30] = $reqA['x_ship_to_zip'];
-		$spa81281[31] = $reqA['x_ship_to_country'];
-		$spa81281[0] = '1';
-		$spa81281[1] = '1';
-		$spa81281[2] = '1';
-		$spa81281[3] = '(TESTMODE2) This transaction has been approved.';
-		$spa81281[4] = '000000';
-		$spa81281[5] = 'P';
-		$spa81281[6] = '0';
-		$spa81281[37] = '382065EC3B4C2F5CDC424A730393D2DF';
-		$spa81281[39] = '';
-		$spc59ec5 = $this->beanstreamapi($reqA, $type);
-		$spa81281[0] = $spc59ec5['response_code'];
-		$spa81281[1] = $spc59ec5['response_subcode'];
-		$spa81281[2] = $spc59ec5['response_reason_code'];
-		$spa81281[3] = $spc59ec5['response_reason_text'];
-		$spa81281[4] = $spc59ec5['approval_code'];
-		$spa81281[5] = $spc59ec5['avs_result_code'];
-		$spa81281[6] = $spc59ec5['transaction_id'];
-		$spa81281[37] = $spc59ec5['md5_hash'];
-		$spa81281[39] = $spc59ec5['card_code_response'];
-		if (!$spa81281) {
+		$resA2[24] = $reqA['x_ship_to_first_name'];
+		$resA2[25] = $reqA['x_ship_to_last_name'];
+		$resA2[26] = $reqA['x_ship_to_company'];
+		$resA2[27] = $reqA['x_ship_to_address'];
+		$resA2[28] = $reqA['x_ship_to_city'];
+		$resA2[29] = $reqA['x_ship_to_state'];
+		$resA2[30] = $reqA['x_ship_to_zip'];
+		$resA2[31] = $reqA['x_ship_to_country'];
+		$resA2[0] = '1';
+		$resA2[1] = '1';
+		$resA2[2] = '1';
+		$resA2[3] = '(TESTMODE2) This transaction has been approved.';
+		$resA2[4] = '000000';
+		$resA2[5] = 'P';
+		$resA2[6] = '0';
+		$resA2[37] = '382065EC3B4C2F5CDC424A730393D2DF';
+		$resA2[39] = '';
+		$resA = $this->beanstreamapi($reqA, $type); /** @var array(string => mixed) $resA */
+		$resA2[0] = $resA['response_code'];
+		$resA2[1] = $resA['response_subcode'];
+		$resA2[2] = $resA['response_reason_code'];
+		$resA2[3] = $resA['response_reason_text'];
+		$resA2[4] = $resA['approval_code'];
+		$resA2[5] = $resA['avs_result_code'];
+		$resA2[6] = $resA['transaction_id'];
+		$resA2[37] = $resA['md5_hash'];
+		$resA2[39] = $resA['card_code_response'];
+		if (!$resA2) {
 			self::err('Error in payment gateway');
 		}
-		$res->setResponseCode((int)str_replace('"', '', $spa81281[0]));
-		$res->setResponseSubcode((int)str_replace('"', '', $spa81281[1]));
-		$res->setResponseReasonCode((int)str_replace('"', '', $spa81281[2]));
-		$res->setResponseReasonText($spa81281[3]);
-		$res->setApprovalCode($spa81281[4]);
-		$res->setAvsResultCode($spa81281[5]);
-		$res->setTransactionId($spa81281[6]);
-		$res->setInvoiceNumber($spa81281[7]);
-		$res->setDescription($spa81281[8]);
-		$res->setAmount($spa81281[9]);
-		$res->setMethod($spa81281[10]);
-		$res->setTransactionType($spa81281[11]);
-		$res->setCustomerId($spa81281[12]);
-		$res->setMd5Hash($spa81281[37]);
-		$res->setCardCodeResponseCode($spa81281[39]);
+		$res->setResponseCode((int)str_replace('"', '', $resA2[0]));
+		$res->setResponseSubcode((int)str_replace('"', '', $resA2[1]));
+		$res->setResponseReasonCode((int)str_replace('"', '', $resA2[2]));
+		$res->setResponseReasonText($resA2[3]);
+		$res->setApprovalCode($resA2[4]);
+		$res->setAvsResultCode($resA2[5]);
+		$res->setTransactionId($resA2[6]);
+		$res->setInvoiceNumber($resA2[7]);
+		$res->setDescription($resA2[8]);
+		$res->setAmount($resA2[9]);
+		$res->setMethod($resA2[10]);
+		$res->setTransactionType($resA2[11]);
+		$res->setCustomerId($resA2[12]);
+		$res->setMd5Hash($resA2[37]);
+		$res->setCardCodeResponseCode($resA2[39]);
 		return $res;
 	}
 
@@ -816,6 +816,16 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 * @var string 
 	 */
 	private static $REFUND = 'REFUND';
+
+	/**
+	 * 2021-07-14 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
+	 * "Refactor the `Schogini_Beanstream` module": https://github.com/canadasatellite-ca/bambora/issues/1
+	 * @used-by beanstreamapi()
+	 * @used-by buildRequest()
+	 * @used-by postRequest()
+	 * @var string
+	 */
+	private static $STATE = 'state';
 
 	/**
 	 * 2021-07-01 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
