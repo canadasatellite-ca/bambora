@@ -3,7 +3,9 @@ namespace CanadaSatellite\Bambora;
 use CanadaSatellite\Bambora\Model\Beanstream as M;
 use Magento\Framework\DataObject as _DO;
 use Magento\Framework\Exception\LocalizedException as LE;
+use Magento\Payment\Model\Info as I;
 use Magento\Payment\Model\InfoInterface as II;
+use Magento\Quote\Model\Quote\Payment as QP;
 use Magento\Sales\Model\Order as O;
 use Magento\Sales\Model\Order\Payment as OP;
 # 2021-07-14
@@ -14,12 +16,12 @@ final class Facade {
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
-	 * @param II|OP $i
 	 * @param string $type
 	 * @param float|string $a
 	 * @return _DO
 	 */
-	function buildRequest(II $i, $type, $a) {
+	function buildRequest($type, $a) {
+		$i = $this->ii(); /** @var II|OP $i */
 		$o = $i->getOrder(); /** @var O $o */
 		$req = new _DO;
 		if ($a) {
@@ -433,6 +435,14 @@ final class Facade {
 
 	/**
 	 * 2021-07-14
+	 * @used-by buildRequest()
+	 * @param string|null $k [optional]
+	 * @return II|I|OP|QP
+	 */
+	private function ii() {return $this->_m->getInfoInstance();}
+
+	/**
+	 * 2021-07-14
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::f()
 	 * @param M $m
 	 * @return self
@@ -443,6 +453,7 @@ final class Facade {
 	 * 2021-07-14
 	 * @used-by __construct()
 	 * @used-by cfg()
+	 * @used-by ii()
 	 * @var M
 	 */
 	private $_m;
