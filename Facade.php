@@ -108,7 +108,6 @@ final class Facade {
 		$res = new _DO;
 		$reqA = $req->getData();
 		$resA2 = [
-			1 => '1',
 			2 => '1',
 			3 => '(TESTMODE) This transaction has been approved.',
 			4 => '000000',
@@ -210,7 +209,6 @@ final class Facade {
 		$resA2[29] = $reqA['x_ship_to_state'];
 		$resA2[30] = $reqA['x_ship_to_zip'];
 		$resA2[31] = $reqA['x_ship_to_country'];
-		$resA2[1] = '1';
 		$resA2[2] = '1';
 		$resA2[3] = '(TESTMODE2) This transaction has been approved.';
 		$resA2[4] = '000000';
@@ -219,7 +217,6 @@ final class Facade {
 		$resA2[37] = '382065EC3B4C2F5CDC424A730393D2DF';
 		$resA2[39] = '';
 		$resA = $this->beanstreamapi($reqA, $type); /** @var array(string => mixed) $resA */
-		$resA2[1] = $resA['response_subcode'];
 		$resA2[2] = $resA['response_reason_code'];
 		$resA2[3] = $resA['response_reason_text'];
 		$resA2[4] = $resA['approval_code'];
@@ -227,11 +224,8 @@ final class Facade {
 		$resA2[6] = $resA['transaction_id'];
 		$resA2[37] = $resA['md5_hash'];
 		$resA2[39] = $resA['card_code_response'];
-		if (!$resA2) {
-			df_error('Error in payment gateway');
-		}
 		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
-		$res->setResponseSubcode((int)str_replace('"', '', $resA2[1]));
+		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
 		$res->setResponseReasonCode((int)str_replace('"', '', $resA2[2]));
 		$res->setResponseReasonText($resA2[3]);
 		$res->setApprovalCode($resA2[4]);
