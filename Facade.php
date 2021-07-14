@@ -108,7 +108,6 @@ final class Facade {
 		$res = new _DO;
 		$reqA = $req->getData();
 		$resA2 = [
-			8 => '',
 			9 => '2704.99',
 			10 => 'CC',
 			11 => 'auth_only',
@@ -169,7 +168,6 @@ final class Facade {
 			66 => '',
 			67 => ''
 		];
-		$resA2[8] = '';
 		$resA2[9] = $reqA[self::$AMOUNT];
 		$resA2[10] = null;
 		$resA2[11] = $type;
@@ -215,7 +213,7 @@ final class Facade {
 		$res->setAvsResultCode($resA['avs_result_code']);
 		$res->setTransactionId($resA['transaction_id']);
 		$res->setInvoiceNumber($reqA['x_invoice_num']);
-		$res->setDescription($resA2[8]);
+		$res->setDescription('');
 		$res->setAmount($resA2[9]);
 		$res->setMethod($resA2[10]);
 		$res->setTransactionType($resA2[11]);
