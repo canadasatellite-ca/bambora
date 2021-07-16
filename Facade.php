@@ -41,7 +41,6 @@ final class Facade {
 				$req[self::$STATE] = $ba->getRegion();
 				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
 				$req->setXCustId($ba->getCustomerId());
-				$req->setXCustomerTaxId($ba->getTaxId());
 			}
 			$amtShipping = $o->getShippingAmount(); /** @var float $amtShipping */
 			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
