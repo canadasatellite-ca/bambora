@@ -39,8 +39,6 @@ final class Facade {
 			$req->setXInvoiceNum($o->getIncrementId());
 			$ba = $o->getBillingAddress(); /** @var OA $ba */
 			if (!empty($ba)) {
-				$req->setXFirstName($ba->getFirstname());
-				$req->setXLastName($ba->getLastname());
 				$req->setXCompany($ba->getCompany());
 				$req[self::$STATE] = $ba->getRegion();
 				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
@@ -186,7 +184,7 @@ final class Facade {
 			,'ordCity' => $ba->getCity()
 			,'ordCountry' => $country
 			,'ordEmailAddress' => $ba->getEmail() ?: $o->getCustomerEmail()
-			,'ordName' => df_cc_s($reqA['x_first_name'], $reqA['x_last_name'])
+			,'ordName' => df_cc_s($ba->getFirstname(), $ba->getLastname())
 			,'ordPhoneNumber' => $ba->getTelephone()
 			,'ordPostalCode' => $ba->getPostcode()
 			,'ordProvince' => $state
@@ -202,7 +200,7 @@ final class Facade {
 			# https://github.com/bambora-na/dev.na.bambora.com/blob/0486cc7e/source/docs/references/recurring_payment/index.md#card-info
 			,'trnCardCvd' => df_ets(dfa($reqA, self::$CVV))
 			,'trnCardNumber' => $reqA[self::$CARD_NUMBER]
-			,'trnCardOwner' => df_cc_s($reqA['x_first_name'], $reqA['x_last_name'])
+			,'trnCardOwner' => df_cc_s($ba->getFirstname(), $ba->getLastname())
 			,'trnExpMonth' => $reqA[self::$CARD_EXP_MONTH]
 			,'trnExpYear' => $reqA[self::$CARD_EXP_YEAR]
 			,'trnOrderNumber' => $reqA['x_invoice_num']
