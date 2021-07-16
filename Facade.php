@@ -29,10 +29,6 @@ final class Facade {
 			$req[self::$AMOUNT] = $a;
 		}
 		if (!empty($o)) {
-			$ba = $o->getBillingAddress(); /** @var OA $ba */
-			if (!empty($ba)) {
-				$req[self::$STATE] = $ba->getRegion();
-			}
 			$amtShipping = $o->getShippingAmount(); /** @var float $amtShipping */
 			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
 			$subtotal = $o->getSubtotal(); /** @var float $subtotal */
@@ -112,7 +108,7 @@ final class Facade {
 	 */
 	private function beanstreamapi(array $reqA, $type) {
 		$ba = $this->ba(); /** @var OA $ba */
-		$state = dftr($reqA[self::$STATE], Regions::ca()); /** @var string $state */
+		$state = dftr($ba->getRegion(), Regions::ca()); /** @var string $state */
 		$country = $ba->getCountryId() ?: (!$state ? null : (
 			dfa(Regions::ca(), $state) ? 'CA' : (dfa(Regions::us(), $state) ? 'US' : null)
 		)); /** @var string $country */
@@ -378,12 +374,4 @@ final class Facade {
 	 * @var string
 	 */
 	private static $AMOUNT = 'amount';
-
-	/**
-	 * 2021-07-14
-	 * @used-by beanstreamapi()
-	 * @used-by build()
-	 * @var string
-	 */
-	private static $STATE = 'state';
 }
