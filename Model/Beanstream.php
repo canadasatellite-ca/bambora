@@ -48,7 +48,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 */
 	function authorize(II $i, $a) {
 		$m = false; /** @var string|false $m */
-		$res = $this->f()->post(F::AUTH_ONLY, $a); /** @var _DO $res */
+		$res = F::p($this, F::AUTH_ONLY, $a); /** @var _DO $res */
 		$i->setCcApproval($res->getApprovalCode())->setLastTransId($res->getTransactionId())->setCcTransId($res->getTransactionId())->setCcAvsStatus($res->getAvsResultCode())->setCcCidStatus($res->getCardCodeResponseCode());
 		$reasonC = $res->getResponseReasonCode();
 		$reasonS = $res->getResponseReasonText();
@@ -93,7 +93,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	function capture(II $i, $a) {
 		$m = false; /** @var string|false $m */
 		$type = $i->getParentTransactionId() ? F::PRIOR_AUTH_CAPTURE : F::AUTH_CAPTURE; /** @var string $type */
-		$res = $this->f()->post($type, $a); /** @var _DO $res */
+		$res = F::p($this, $type, $a); /** @var _DO $res */
 		if ($res->getResponseCode() == self::$APPROVED) {
 			$i->setStatus(self::STATUS_APPROVED);
 			$i->setCcTransId($res->getTransactionId());
@@ -165,7 +165,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		$m = false; /** @var Phrase|string|false $m */
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$res = $this->f()->post('REFUND', $a);
+		$res = F::p($this, 'REFUND', $a);
 		if ($res->getResponseCode() == self::$APPROVED) {
 			$i->setStatus(self::STATUS_SUCCESS);
 			if ($res->getTransactionId() != $parentId) {
@@ -227,7 +227,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	function void(II $i) {
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$res = $this->f()->post(F::VOID, 0.0);
+		$res = F::p($this, F::VOID, 0.0);
 		if (self::$APPROVED != $res->getResponseCode()) {
 			self::err($res->getResponseReasonText());
 		}
@@ -240,16 +240,6 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		$i->setTransactionAdditionalInfo('real_transaction_id', $res->getTransactionId());
 		return $this;
 	}
-
-	/**
-	 * 2021-07-14
-	 * @used-by authorize()
-	 * @used-by capture()
-	 * @used-by refund()
-	 * @used-by void()
-	 * @return F
-	 */
-	private function f() {return F::s($this);}
 
 	/**
 	 * 2021-06-29 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro

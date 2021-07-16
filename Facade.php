@@ -12,40 +12,8 @@ use Magento\Sales\Model\Order\Payment as OP;
 # 2021-07-14
 final class Facade {
 	/**
-	 * 2021-06-28
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
-	 * @param string $type
-	 * @param float|string $a
-	 * @return mixed
-	 * @throws LE
-	 */
-	function post($type, $a) {
-		$res = new _DO;
-		$resA = $this->beanstreamapi($type, $a); /** @var array(string => mixed) $resA */
-		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
-		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
-		$res->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
-		$res->setResponseReasonText($resA['response_reason_text']);
-		$res->setApprovalCode($resA['approval_code']);
-		$res->setAvsResultCode($resA['avs_result_code']);
-		$res->setTransactionId($resA['transaction_id']);
-		$res->setInvoiceNumber($this->o()->getIncrementId());
-		$res->setDescription('');
-		$res->setAmount($a);
-		$res->setMethod(null);
-		$res->setTransactionType($type);
-		$res->setCustomerId($this->ba()->getCustomerId());
-		$res->setMd5Hash($resA['md5_hash']);
-		$res->setCardCodeResponseCode($resA['card_code_response']);
-		return $res;
-	}
-
-	/**
 	 * 2021-07-14
-	 * @used-by s()
+	 * @used-by p()
 	 * @param M $m
 	 */
 	private function __construct(M $m) {$this->_m = $m;}
@@ -259,12 +227,49 @@ final class Facade {
 	private function o() {return $this->ii()->getOrder();}
 
 	/**
-	 * 2021-07-14
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::f()
-	 * @param M $m
-	 * @return self
+	 * 2021-06-28
+	 * @used-by p()
+	 * @param string $type
+	 * @param float|string $a
+	 * @return _DO
+	 * @throws LE
 	 */
-	static function s(M $m) {return dfcf(function(M $m) {return new self($m);}, [$m]);}
+	private function post($type, $a) {
+		$res = new _DO;
+		$resA = $this->beanstreamapi($type, $a); /** @var array(string => mixed) $resA */
+		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
+		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
+		$res->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
+		$res->setResponseReasonText($resA['response_reason_text']);
+		$res->setApprovalCode($resA['approval_code']);
+		$res->setAvsResultCode($resA['avs_result_code']);
+		$res->setTransactionId($resA['transaction_id']);
+		$res->setInvoiceNumber($this->o()->getIncrementId());
+		$res->setDescription('');
+		$res->setAmount($a);
+		$res->setMethod(null);
+		$res->setTransactionType($type);
+		$res->setCustomerId($this->ba()->getCustomerId());
+		$res->setMd5Hash($resA['md5_hash']);
+		$res->setCardCodeResponseCode($resA['card_code_response']);
+		return $res;
+	}
+
+	/**
+	 * 2021-07-17
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
+	 * @param M $m
+	 * @param string $type
+	 * @param float|string $a
+	 * @return _DO
+	 */
+	static function p(M $m, $type, $a) {
+		$i = new self($m); /** @var self $i */
+		return $i->post($type, $a);
+	}
 
 	/**
 	 * 2021-07-14
