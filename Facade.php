@@ -97,6 +97,7 @@ final class Facade {
 			$query2 = ['adjId' => $spd28804[0]];
 		}
 		$o = $this->o(); /** @var O $o */
+		$nameFull = df_cc_s($ba->getFirstname(), $ba->getLastname()); /** @var string $nameFull */
 		$query = http_build_query([
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# «Ensure that the Customer IP address is being passed in the API request for all transactions»:
@@ -118,7 +119,7 @@ final class Facade {
 			,'ordCity' => $ba->getCity()
 			,'ordCountry' => $country
 			,'ordEmailAddress' => $ba->getEmail() ?: $o->getCustomerEmail()
-			,'ordName' => df_cc_s($ba->getFirstname(), $ba->getLastname())
+			,'ordName' => $nameFull
 			,'ordPhoneNumber' => $ba->getTelephone()
 			,'ordPostalCode' => $ba->getPostcode()
 			,'ordProvince' => $state
@@ -134,7 +135,7 @@ final class Facade {
 			# https://github.com/bambora-na/dev.na.bambora.com/blob/0486cc7e/source/docs/references/recurring_payment/index.md#card-info
 			,'trnCardCvd' => df_ets($i->getCcCid())
 			,'trnCardNumber' => $i->getCcNumber()
-			,'trnCardOwner' => df_cc_s($ba->getFirstname(), $ba->getLastname())
+			,'trnCardOwner' => $nameFull
 			,'trnExpMonth' => sprintf('%02d', $i->getCcExpMonth())
 			# 2021-07-07 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# The year should be represented by the last 2 digits:
