@@ -50,7 +50,6 @@ final class Facade {
 			}
 			$req->setXPoNum($i->getPoNumber())->setXTax($amtTax)->setXSubtotal($subtotal)->setXFreight($amtShipping);
 		}
-		$req[self::$CARD_NUMBER] = $i->getCcNumber();
 		return $req;
 	}
 
@@ -179,7 +178,7 @@ final class Facade {
 			# https://dev.na.bambora.com/docs/references/recurring_payment/#card-info
 			# https://github.com/bambora-na/dev.na.bambora.com/blob/0486cc7e/source/docs/references/recurring_payment/index.md#card-info
 			,'trnCardCvd' => df_ets($i->getCcCid())
-			,'trnCardNumber' => $reqA[self::$CARD_NUMBER]
+			,'trnCardNumber' => $i->getCcNumber()
 			,'trnCardOwner' => df_cc_s($ba->getFirstname(), $ba->getLastname())
 			,'trnExpMonth' => sprintf('%02d', $i->getCcExpMonth())
 			# 2021-07-07 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
@@ -379,14 +378,6 @@ final class Facade {
 	 * @var string
 	 */
 	private static $AMOUNT = 'amount';
-
-	/**
-	 * 2021-07-07
-	 * @used-by beanstreamapi()
-	 * @used-by build()
-	 * @var string
-	 */
-	private static $CARD_NUMBER = 'card_number';
 
 	/**
 	 * 2021-07-14
