@@ -40,7 +40,6 @@ final class Facade {
 			if (!empty($ba)) {
 				$req[self::$STATE] = $ba->getRegion();
 				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
-				$req->setXFax($ba->getFax());
 				$req->setXCustId($ba->getCustomerId());
 				$req->setXCustomerTaxId($ba->getTaxId());
 			}
