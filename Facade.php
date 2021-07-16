@@ -7,6 +7,7 @@ use Magento\Payment\Model\Info as I;
 use Magento\Payment\Model\InfoInterface as II;
 use Magento\Quote\Model\Quote\Payment as QP;
 use Magento\Sales\Model\Order as O;
+use Magento\Sales\Model\Order\Address as OA;
 use Magento\Sales\Model\Order\Payment as OP;
 # 2021-07-14
 final class Facade {
@@ -22,7 +23,7 @@ final class Facade {
 	 */
 	function build($type, $a) {
 		$i = $this->ii(); /** @var II|OP $i */
-		$o = $i->getOrder(); /** @var O $o */
+		$o = $this->o(); /** @var O $o */
 		$req = new _DO;
 		if ($a) {
 			$req[self::$AMOUNT] = $a;
@@ -36,7 +37,7 @@ final class Facade {
 		}
 		if (!empty($o)) {
 			$req->setXInvoiceNum($o->getIncrementId());
-			$ba = $o->getBillingAddress();
+			$ba = $o->getBillingAddress(); /** @var OA $ba */
 			if (!empty($ba)) {
 				$req->setXFirstName($ba->getFirstname());
 				$req->setXLastName($ba->getLastname());
@@ -52,24 +53,11 @@ final class Facade {
 				$req->setXCustomerTaxId($ba->getTaxId());
 				$req->setXEmail($ba->getEmail() ?: $o->getCustomerEmail());
 			}
-			$sa = $o->getShippingAddress();
-			if (!$sa) {
-				$sa = $ba;
-			}
 			$amtShipping = $o->getShippingAmount(); /** @var float $amtShipping */
 			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
 			$subtotal = $o->getSubtotal(); /** @var float $subtotal */
+			$sa = $this->sa(); /** @var OA $sa */
 			if (!empty($sa)) {
-				$req->addData([
-					self::$SHIP_TO_FIRST_NAME => $sa->getFirstname()
-					,self::$SHIP_TO_LAST_NAME => $sa->getLastname()
-					,self::$SHIP_TO_COMPANY => $sa->getCompany()
-					,self::$SHIP_TO_ADDRESS => $sa->getStreet(1)[0]
-					,self::$SHIP_TO_CITY => $sa->getCity()
-					,self::$SHIP_TO_STATE => $sa->getRegion()
-				]);
-				$req->setXShipToZip($sa->getPostcode());
-				$req->setXShipToCountry($sa->getCountry());
 				if (!isset($amtShipping) || $amtShipping <= 0) {
 					$amtShipping = $sa->getShippingAmount();
 				}
@@ -109,16 +97,6 @@ final class Facade {
 	function post(_DO $req, $type) {
 		$res = new _DO;
 		$reqA = $req->getData();
-		$reqA += [
-			self::$SHIP_TO_FIRST_NAME => $reqA['x_first_name']
-			,self::$SHIP_TO_LAST_NAME => $reqA['x_last_name']
-			,self::$SHIP_TO_COMPANY => $reqA['x_company']
-			,self::$SHIP_TO_ADDRESS => $reqA['x_address']
-			,self::$SHIP_TO_CITY => $reqA['x_city']
-			,self::$SHIP_TO_STATE => $reqA[self::$STATE]
-		];
-		$reqA['x_ship_to_zip'] = !isset($reqA['x_ship_to_zip']) ? $reqA['x_zip'] : $reqA['x_ship_to_zip'];
-		$reqA['x_ship_to_country'] = !isset($reqA['x_ship_to_country']) ? $reqA[self::$COUNTRY] : $reqA['x_ship_to_country'];
 		$resA = $this->beanstreamapi($reqA, $type); /** @var array(string => mixed) $resA */
 		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
 		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
@@ -323,10 +301,18 @@ final class Facade {
 	/**
 	 * 2021-07-14
 	 * @used-by build()
+	 * @used-by o()
 	 * @param string|null $k [optional]
 	 * @return II|I|OP|QP
 	 */
 	private function ii() {return $this->_m->getInfoInstance();}
+
+	/**
+	 * 2021-07-16
+	 * @used-by build()
+	 * @return O
+	 */
+	private function o() {return $this->ii()->getOrder();}
 
 	/**
 	 * 2021-07-14
@@ -335,6 +321,13 @@ final class Facade {
 	 * @return self
 	 */
 	static function s(M $m) {return dfcf(function(M $m) {return new self($m);}, [$m]);}
+
+	/**
+	 * 2021-07-16
+	 * @used-by build()
+	 * @return OA
+	 */
+	private function sa() {return $this->o()->getShippingAddress() ?: $this->o()->getBillingAddress();}
 
 	/**
 	 * 2021-07-14
@@ -438,58 +431,9 @@ final class Facade {
 	private static $CVV = 'cvv';
 
 	/**
-	 * 2021-07-16
-	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $SHIP_TO_ADDRESS = 'ship_to_address';
-
-	/**
-	 * 2021-07-16
-	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $SHIP_TO_CITY = 'ship_to_city';
-
-	/**
-	 * 2021-07-16
-	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $SHIP_TO_COMPANY = 'ship_to_company';
-
-	/**
-	 * 2021-07-14
-	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $SHIP_TO_FIRST_NAME = 'ship_to_first_name';
-
-	/**
-	 * 2021-07-16
-	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $SHIP_TO_LAST_NAME = 'ship_to_last_name';
-
-	/**
-	 * 2021-07-16
-	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $SHIP_TO_STATE = 'ship_to_state';
-
-	/**
 	 * 2021-07-14
 	 * @used-by beanstreamapi()
 	 * @used-by build()
-	 * @used-by post()
 	 * @var string
 	 */
 	private static $STATE = 'state';
