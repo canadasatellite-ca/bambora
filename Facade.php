@@ -418,15 +418,6 @@ final class Facade {
 	 * 2021-07-07
 	 * @used-by beanstreamapi()
 	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $COUNTRY = 'country';
-
-	/**
-	 * 2021-07-07
-	 * @used-by beanstreamapi()
-	 * @used-by build()
 	 * @var string
 	 */
 	private static $CVV = 'cvv';
