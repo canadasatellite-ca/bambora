@@ -40,7 +40,6 @@ final class Facade {
 			if (!empty($ba)) {
 				$req[self::$STATE] = $ba->getRegion();
 				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
-				$req->setXCustId($ba->getCustomerId());
 			}
 			$amtShipping = $o->getShippingAmount(); /** @var float $amtShipping */
 			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
@@ -99,7 +98,7 @@ final class Facade {
 		$res->setAmount($reqA[self::$AMOUNT]);
 		$res->setMethod(null);
 		$res->setTransactionType($type);
-		$res->setCustomerId($reqA['x_cust_id']);
+		$res->setCustomerId($this->ba()->getCustomerId());
 		$res->setMd5Hash($resA['md5_hash']);
 		$res->setCardCodeResponseCode($resA['card_code_response']);
 		return $res;
@@ -115,6 +114,7 @@ final class Facade {
 	/**
 	 * 2021-07-16
 	 * @used-by beanstreamapi()
+	 * @used-by post()
 	 * @used-by sa()
 	 * @return OA
 	 */
