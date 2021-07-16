@@ -51,7 +51,6 @@ final class Facade {
 			$req->setXPoNum($i->getPoNumber())->setXTax($amtTax)->setXSubtotal($subtotal)->setXFreight($amtShipping);
 		}
 		if ($req[self::$CARD_NUMBER] = $i->getCcNumber()) {
-			$req[self::$CARD_EXP_MONTH] = sprintf('%02d', $i->getCcExpMonth());
 			# 2021-07-07 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# 1) "Refactor the `Schogini_Beanstream` module": https://github.com/canadasatellite-ca/bambora/issues/1
 			# 2) The year should be represented by the last 2 digits:
@@ -189,7 +188,7 @@ final class Facade {
 			,'trnCardCvd' => df_ets($i->getCcCid())
 			,'trnCardNumber' => $reqA[self::$CARD_NUMBER]
 			,'trnCardOwner' => df_cc_s($ba->getFirstname(), $ba->getLastname())
-			,'trnExpMonth' => $reqA[self::$CARD_EXP_MONTH]
+			,'trnExpMonth' => sprintf('%02d', $i->getCcExpMonth())
 			,'trnExpYear' => $reqA[self::$CARD_EXP_YEAR]
 			,'trnOrderNumber' => $o->getIncrementId()
 			,'trnType' => $trnType
@@ -383,14 +382,6 @@ final class Facade {
 	 * @var string
 	 */
 	private static $AMOUNT = 'amount';
-
-	/**
-	 * 2021-07-07
-	 * @used-by beanstreamapi()
-	 * @used-by build()
-	 * @var string
-	 */
-	private static $CARD_EXP_MONTH = 'card_exp_month';
 
 	/**
 	 * 2021-07-07
