@@ -63,8 +63,8 @@ final class Facade {
 				$req->addData([
 					self::$SHIP_TO_FIRST_NAME => $sa->getFirstname()
 					,self::$SHIP_TO_LAST_NAME => $sa->getLastname()
+					,self::$SHIP_TO_COMPANY => $sa->getCompany()
 				]);
-				$req->setXShipToCompany($sa->getCompany());
 				$req->setXShipToAddress($sa->getStreet(1)[0]);
 				$req->setXShipToCity($sa->getCity());
 				$req->setXShipToState($sa->getRegion());
@@ -112,8 +112,8 @@ final class Facade {
 		$reqA += [
 			self::$SHIP_TO_FIRST_NAME => $reqA['x_first_name']
 			,self::$SHIP_TO_LAST_NAME => $reqA['x_last_name']
+			,self::$SHIP_TO_COMPANY => $reqA['x_company']
 		];
-		$reqA['x_ship_to_company'] = !isset($reqA['x_ship_to_company']) ? $reqA['x_company'] : $reqA['x_ship_to_company'];
 		$reqA['x_ship_to_address'] = !isset($reqA['x_ship_to_address']) ? $reqA['x_address'] : $reqA['x_ship_to_address'];
 		$reqA['x_ship_to_city'] = !isset($reqA['x_ship_to_city']) ? $reqA['x_city'] : $reqA['x_ship_to_city'];
 		$reqA['x_ship_to_state'] = !isset($reqA['x_ship_to_state']) ? $reqA[self::$STATE] : $reqA['x_ship_to_state'];
@@ -436,6 +436,14 @@ final class Facade {
 	 * @var string
 	 */
 	private static $CVV = 'cvv';
+
+	/**
+	 * 2021-07-16
+	 * @used-by build()
+	 * @used-by post()
+	 * @var string
+	 */
+	private static $SHIP_TO_COMPANY = 'ship_to_company';
 
 	/**
 	 * 2021-07-14
