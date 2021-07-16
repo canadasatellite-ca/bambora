@@ -107,7 +107,9 @@ final class Facade {
 	function post(_DO $req, $type) {
 		$res = new _DO;
 		$reqA = $req->getData();
-		$reqA[self::$SHIP_TO_FIRST_NAME] = !isset($reqA[self::$SHIP_TO_FIRST_NAME]) ? $reqA['x_first_name'] : $reqA[self::$SHIP_TO_FIRST_NAME];
+		$reqA += [
+			self::$SHIP_TO_FIRST_NAME => $reqA['x_first_name']
+		];
 		$reqA['x_ship_to_last_name'] = !isset($reqA['x_ship_to_last_name']) ? $reqA['x_last_name'] : $reqA['x_ship_to_last_name'];
 		$reqA['x_ship_to_company'] = !isset($reqA['x_ship_to_company']) ? $reqA['x_company'] : $reqA['x_ship_to_company'];
 		$reqA['x_ship_to_address'] = !isset($reqA['x_ship_to_address']) ? $reqA['x_address'] : $reqA['x_ship_to_address'];
