@@ -42,7 +42,6 @@ final class Facade {
 				$req->setXFirstName($ba->getFirstname());
 				$req->setXLastName($ba->getLastname());
 				$req->setXCompany($ba->getCompany());
-				$req->setXAddress($ba->getStreet(1)[0]);
 				$req->setXCity($ba->getCity());
 				$req[self::$STATE] = $ba->getRegion();
 				$req->setXZip($ba->getPostcode());
@@ -124,6 +123,14 @@ final class Facade {
 	private function __construct(M $m) {$this->_m = $m;}
 
 	/**
+	 * 2021-07-16
+	 * @used-by beanstreamapi()
+	 * @used-by sa()
+	 * @return OA
+	 */
+	private function ba() {return $this->o()->getBillingAddress();}
+
+	/**
 	 * 2021-06-29
 	 * @used-by post()
 	 * @param array(string => mixed) $reqA
@@ -176,7 +183,7 @@ final class Facade {
 			# 2) «9 digits»
 			# https://dev.na.bambora.com/docs/references/recurring_payment/#authorization
 			,'merchant_id' => $this->cfg('merchant_id')
-			,'ordAddress1' => $reqA['x_address']
+			,'ordAddress1' => $this->ba()->getStreet()[0]
 			,'ordAddress2' => ''
 			,'ordCity' => $reqA['x_city']
 			,'ordCountry' => $country
@@ -309,6 +316,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-16
+	 * @used-by ba()
 	 * @used-by build()
 	 * @return O
 	 */
@@ -327,7 +335,7 @@ final class Facade {
 	 * @used-by build()
 	 * @return OA
 	 */
-	private function sa() {return $this->o()->getShippingAddress() ?: $this->o()->getBillingAddress();}
+	private function sa() {return $this->o()->getShippingAddress() ?: $this->ba();}
 
 	/**
 	 * 2021-07-14
