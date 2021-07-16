@@ -19,51 +19,12 @@ final class Facade {
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
 	 * @param string $type
 	 * @param float|string $a
-	 * @return _DO
-	 */
-	function build($type, $a) {
-		$i = $this->ii(); /** @var II|OP $i */
-		$o = $this->o(); /** @var O $o */
-		$req = new _DO;
-		if ($a) {
-			$req[self::$AMOUNT] = $a;
-		}
-		if (!empty($o)) {
-			$amtShipping = $o->getShippingAmount(); /** @var float $amtShipping */
-			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
-			$subtotal = $o->getSubtotal(); /** @var float $subtotal */
-			$sa = $this->sa(); /** @var OA $sa */
-			if (!empty($sa)) {
-				if (!isset($amtShipping) || $amtShipping <= 0) {
-					$amtShipping = $sa->getShippingAmount();
-				}
-				if (!isset($amtTax) || $amtTax <= 0) {
-					$amtTax = $sa->getTaxAmount();
-				}
-				if (!isset($subtotal) || $subtotal <= 0) {
-					$subtotal = $sa->getSubtotal();
-				}
-			}
-			$req->setXPoNum($i->getPoNumber())->setXTax($amtTax)->setXSubtotal($subtotal)->setXFreight($amtShipping);
-		}
-		return $req;
-	}
-
-	/**
-	 * 2021-06-28
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
-	 * @param _DO $req
-	 * @param string $type
 	 * @return mixed
 	 * @throws LE
 	 */
-	function post(_DO $req, $type) {
+	function post($type, $a) {
 		$res = new _DO;
-		$reqA = $req->getData();
-		$resA = $this->beanstreamapi($reqA, $type); /** @var array(string => mixed) $resA */
+		$resA = $this->beanstreamapi($type, $a); /** @var array(string => mixed) $resA */
 		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
 		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
 		$res->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
@@ -73,7 +34,7 @@ final class Facade {
 		$res->setTransactionId($resA['transaction_id']);
 		$res->setInvoiceNumber($this->o()->getIncrementId());
 		$res->setDescription('');
-		$res->setAmount($reqA[self::$AMOUNT]);
+		$res->setAmount($a);
 		$res->setMethod(null);
 		$res->setTransactionType($type);
 		$res->setCustomerId($this->ba()->getCustomerId());
@@ -93,7 +54,6 @@ final class Facade {
 	 * 2021-07-16
 	 * @used-by beanstreamapi()
 	 * @used-by post()
-	 * @used-by sa()
 	 * @return OA
 	 */
 	private function ba() {return $this->o()->getBillingAddress();}
@@ -101,12 +61,12 @@ final class Facade {
 	/**
 	 * 2021-06-29
 	 * @used-by post()
-	 * @param array(string => mixed) $reqA
 	 * @param string $type
+	 * @param float|string $a
 	 * @return array
 	 * @throws LE
 	 */
-	private function beanstreamapi(array $reqA, $type) {
+	private function beanstreamapi($type, $a) {
 		$ba = $this->ba(); /** @var OA $ba */
 		$state = dftr($ba->getRegion(), Regions::ca()); /** @var string $state */
 		$country = $ba->getCountryId() ?: (!$state ? null : (
@@ -135,7 +95,6 @@ final class Facade {
 			$trnType = 'PAC';
 			$spd28804 = explode('--', $i->getCcTransId());
 			$query2 = ['adjId' => $spd28804[0]];
-			$reqA[self::$AMOUNT] = 0.0;
 		}
 		$o = $this->o(); /** @var O $o */
 		$query = http_build_query([
@@ -165,7 +124,7 @@ final class Facade {
 			,'ordProvince' => $state
 			,'password' => $this->cfg('merchant_password')
 			,'requestType' => 'BACKEND'
-			,'trnAmount' => $reqA[self::$AMOUNT]
+			,'trnAmount' => $a
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# 1) «Include the 3 or 4-digit CVD number from the back of the customer's credit card.
 			# CVD numbers are not stored in the Bambora system
@@ -283,7 +242,6 @@ final class Facade {
 	/**
 	 * 2021-07-14
 	 * @used-by beanstreamapi()
-	 * @used-by build()
 	 * @used-by o()
 	 * @param string|null $k [optional]
 	 * @return II|I|OP|QP
@@ -294,7 +252,6 @@ final class Facade {
 	 * 2021-07-16
 	 * @used-by ba()
 	 * @used-by beanstreamapi()
-	 * @used-by build()
 	 * @used-by post()
 	 * @return O
 	 */
@@ -307,13 +264,6 @@ final class Facade {
 	 * @return self
 	 */
 	static function s(M $m) {return dfcf(function(M $m) {return new self($m);}, [$m]);}
-
-	/**
-	 * 2021-07-16
-	 * @used-by build()
-	 * @return OA
-	 */
-	private function sa() {return $this->o()->getShippingAddress() ?: $this->ba();}
 
 	/**
 	 * 2021-07-14
@@ -343,7 +293,6 @@ final class Facade {
 	/**
 	 * 2021-07-01
 	 * @used-by beanstreamapi()
-	 * @used-by build()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
 	 * @var string
 	 */
@@ -351,27 +300,9 @@ final class Facade {
 
 	/**
 	 * 2021-07-01
-	 * @used-by build()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
-	 * @var string
-	 */
-	const REFUND = 'REFUND';
-
-	/**
-	 * 2021-07-01
 	 * @used-by beanstreamapi()
-	 * @used-by build()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
 	 * @var string
 	 */
 	const VOID = 'VOID';
-	
-	/**
-	 * 2021-07-07
-	 * @used-by beanstreamapi()
-	 * @used-by build()
-	 * @used-by post()
-	 * @var string
-	 */
-	private static $AMOUNT = 'amount';
 }
