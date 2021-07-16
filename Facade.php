@@ -38,7 +38,6 @@ final class Facade {
 		if (!empty($o)) {
 			$ba = $o->getBillingAddress(); /** @var OA $ba */
 			if (!empty($ba)) {
-				$req->setXCompany($ba->getCompany());
 				$req[self::$STATE] = $ba->getRegion();
 				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
 				$req->setXFax($ba->getFax());
