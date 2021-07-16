@@ -50,7 +50,6 @@ final class Facade {
 				$req->setXFax($ba->getFax());
 				$req->setXCustId($ba->getCustomerId());
 				$req->setXCustomerTaxId($ba->getTaxId());
-				$req->setXEmail($ba->getEmail() ?: $o->getCustomerEmail());
 			}
 			$amtShipping = $o->getShippingAmount(); /** @var float $amtShipping */
 			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
@@ -167,6 +166,8 @@ final class Facade {
 			$query2 = ['adjId' => $spd28804[0]];
 			$reqA[self::$AMOUNT] = 0.0;
 		}
+		$ba = $this->ba(); /** @var OA $ba */
+		$o = $this->o(); /** @var O $o */
 		$query = http_build_query([
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# «Ensure that the Customer IP address is being passed in the API request for all transactions»:
@@ -183,11 +184,11 @@ final class Facade {
 			# 2) «9 digits»
 			# https://dev.na.bambora.com/docs/references/recurring_payment/#authorization
 			,'merchant_id' => $this->cfg('merchant_id')
-			,'ordAddress1' => $this->ba()->getStreet()[0]
+			,'ordAddress1' => $ba->getStreet()[0]
 			,'ordAddress2' => ''
 			,'ordCity' => $reqA['x_city']
 			,'ordCountry' => $country
-			,'ordEmailAddress' => $reqA['x_email']
+			,'ordEmailAddress' => $ba->getEmail() ?: $o->getCustomerEmail()
 			,'ordName' => df_cc_s($reqA['x_first_name'], $reqA['x_last_name'])
 			,'ordPhoneNumber' => $reqA['x_phone']
 			,'ordPostalCode' => $reqA['x_zip']
@@ -317,6 +318,7 @@ final class Facade {
 	/**
 	 * 2021-07-16
 	 * @used-by ba()
+	 * @used-by beanstreamapi()
 	 * @used-by build()
 	 * @return O
 	 */
