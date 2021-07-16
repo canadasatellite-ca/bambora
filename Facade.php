@@ -39,7 +39,6 @@ final class Facade {
 			$ba = $o->getBillingAddress(); /** @var OA $ba */
 			if (!empty($ba)) {
 				$req[self::$STATE] = $ba->getRegion();
-				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
 			}
 			$amtShipping = $o->getShippingAmount(); /** @var float $amtShipping */
 			$amtTax = $o->getTaxAmount(); /** @var float $amtTax */
@@ -129,8 +128,9 @@ final class Facade {
 	 * @throws LE
 	 */
 	private function beanstreamapi(array $reqA, $type) {
+		$ba = $this->ba(); /** @var OA $ba */
 		$state = dftr($reqA[self::$STATE], Regions::ca()); /** @var string $state */
-		$country = $reqA[self::$COUNTRY] ?: (!$state ? null : (
+		$country = $ba->getCountryId() ?: (!$state ? null : (
 			dfa(Regions::ca(), $state) ? 'CA' : (dfa(Regions::us(), $state) ? 'US' : null)
 		)); /** @var string $country */
 		if ('US' === $country) {
@@ -157,7 +157,6 @@ final class Facade {
 			$query2 = ['adjId' => $spd28804[0]];
 			$reqA[self::$AMOUNT] = 0.0;
 		}
-		$ba = $this->ba(); /** @var OA $ba */
 		$o = $this->o(); /** @var O $o */
 		$query = http_build_query([
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
