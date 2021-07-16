@@ -28,13 +28,6 @@ final class Facade {
 		if ($a) {
 			$req[self::$AMOUNT] = $a;
 		}
-		switch ($type) {
-			case self::REFUND:
-			case self::VOID:
-			case self::PRIOR_AUTH_CAPTURE:
-				$req->setXTransId($i->getCcTransId());
-				break;
-		}
 		if (!empty($o)) {
 			$ba = $o->getBillingAddress(); /** @var OA $ba */
 			if (!empty($ba)) {
@@ -141,6 +134,7 @@ final class Facade {
 		}
 		$trnType = 'P';
 		$query2 = []; /** @var array(string => string) $query2 */
+		$i = $this->ii(); /** @var II|OP $i */
 		if ($type == self::AUTH_CAPTURE) {
 			$trnType = 'P';
 		}
@@ -149,11 +143,11 @@ final class Facade {
 		}
 		elseif ($type == self::PRIOR_AUTH_CAPTURE) {
 			$trnType = 'PAC';
-			$query2 = ['adjId' => $reqA['x_trans_id']];
+			$query2 = ['adjId' => $i->getCcTransId()];
 		}
 		elseif ($type == self::VOID) {
 			$trnType = 'PAC';
-			$spd28804 = explode('--', $reqA['x_trans_id']);
+			$spd28804 = explode('--', $i->getCcTransId());
 			$query2 = ['adjId' => $spd28804[0]];
 			$reqA[self::$AMOUNT] = 0.0;
 		}
@@ -298,6 +292,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-14
+	 * @used-by beanstreamapi()
 	 * @used-by build()
 	 * @used-by o()
 	 * @param string|null $k [optional]
