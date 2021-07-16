@@ -36,7 +36,6 @@ final class Facade {
 				break;
 		}
 		if (!empty($o)) {
-			$req->setXInvoiceNum($o->getIncrementId());
 			$ba = $o->getBillingAddress(); /** @var OA $ba */
 			if (!empty($ba)) {
 				$req->setXCompany($ba->getCompany());
@@ -98,7 +97,7 @@ final class Facade {
 		$res->setApprovalCode($resA['approval_code']);
 		$res->setAvsResultCode($resA['avs_result_code']);
 		$res->setTransactionId($resA['transaction_id']);
-		$res->setInvoiceNumber($reqA['x_invoice_num']);
+		$res->setInvoiceNumber($this->o()->getIncrementId());
 		$res->setDescription('');
 		$res->setAmount($reqA[self::$AMOUNT]);
 		$res->setMethod(null);
@@ -203,7 +202,7 @@ final class Facade {
 			,'trnCardOwner' => df_cc_s($ba->getFirstname(), $ba->getLastname())
 			,'trnExpMonth' => $reqA[self::$CARD_EXP_MONTH]
 			,'trnExpYear' => $reqA[self::$CARD_EXP_YEAR]
-			,'trnOrderNumber' => $reqA['x_invoice_num']
+			,'trnOrderNumber' => $o->getIncrementId()
 			,'trnType' => $trnType
 			,'username' => $this->cfg('merchant_username')
 		] + $query2); /** @var string $query */
@@ -315,6 +314,7 @@ final class Facade {
 	 * @used-by ba()
 	 * @used-by beanstreamapi()
 	 * @used-by build()
+	 * @used-by post()
 	 * @return O
 	 */
 	private function o() {return $this->ii()->getOrder();}
