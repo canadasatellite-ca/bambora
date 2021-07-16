@@ -45,7 +45,6 @@ final class Facade {
 				$req[self::$STATE] = $ba->getRegion();
 				$req->setXZip($ba->getPostcode());
 				$req[self::$COUNTRY] = $ba->getCountry() ?: $ba->getCountryId();
-				$req->setXPhone($ba->getTelephone());
 				$req->setXFax($ba->getFax());
 				$req->setXCustId($ba->getCustomerId());
 				$req->setXCustomerTaxId($ba->getTaxId());
@@ -189,7 +188,7 @@ final class Facade {
 			,'ordCountry' => $country
 			,'ordEmailAddress' => $ba->getEmail() ?: $o->getCustomerEmail()
 			,'ordName' => df_cc_s($reqA['x_first_name'], $reqA['x_last_name'])
-			,'ordPhoneNumber' => $reqA['x_phone']
+			,'ordPhoneNumber' => $ba->getTelephone()
 			,'ordPostalCode' => $reqA['x_zip']
 			,'ordProvince' => $state
 			,'password' => $this->cfg('merchant_password')
