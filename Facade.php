@@ -144,14 +144,13 @@ final class Facade {
 			,'avs_result_code' => $r2->avsResult()
 			,'card_code_response' => ''
 			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
-			,'response_code' => '1'
+			,'response_code' => (int)$r2->trnApproved()
 			,'response_reason_code' => $r2->messageId()
 			,'response_reason_text' => $r2->messageText()
-			,'response_subcode' => '1'
+			,'response_subcode' => (int)$r2->trnApproved()
 			,'transaction_id' => $r2->trnId()
 		]; /** @var array(string => mixed) $r */
 		if (!$r2->trnApproved()) {
-			$r = ['response_code' => '0', 'response_subcode' => '0'] + $r;
 			if (empty($resA['errorFields'])) {
 				$resA['errorFields'] = 'Transaction has been DECLINED.';
 			}
