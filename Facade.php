@@ -145,51 +145,52 @@ final class Facade {
 				'request' => $query, 'response parsed' => $spb41165, 'response raw' => $spf8f74c
 			], "error-$errorType");
 		}
-		$resA = [];
-		$resA['response_code'] = '1';
-		$resA['response_subcode'] = '1';
-		$resA['response_reason_code'] = '1';
-		$resA['response_reason_text'] = '(TESTMODE2) This transaction has been approved.';
-		$resA['approval_code'] = '000000';
-		$resA['avs_result_code'] = 'P';
-		$resA['transaction_id'] = '0';
-		$resA['md5_hash'] = '382065EC3B4C2F5CDC424A730393D2DF';
-		$resA['card_code_response'] = '';
+		$r = []; /** @var array(string => mixed) $r */
+		$r['response_code'] = '1';
+		$r['response_subcode'] = '1';
+		$r['response_reason_code'] = '1';
+		$r['response_reason_text'] = '(TESTMODE2) This transaction has been approved.';
+		$r['approval_code'] = '000000';
+		$r['avs_result_code'] = 'P';
+		$r['transaction_id'] = '0';
+		$r['md5_hash'] = '382065EC3B4C2F5CDC424A730393D2DF';
+		$r['card_code_response'] = '';
 		if ($spb41165['trnApproved'] == 1) {
-			$resA['response_reason_text'] = '';
-			$resA['response_code'] = '1';
+			$r['response_reason_text'] = '';
+			$r['response_code'] = '1';
 			if (isset($spb41165['messageText']) && !empty($spb41165['messageText'])) {
-				$resA['response_reason_text'] = $spb41165['messageText'];
+				$r['response_reason_text'] = $spb41165['messageText'];
 			}
 			if (isset($spb41165['messageId']) && !empty($spb41165['messageId'])) {
-				$resA['response_reason_code'] = $spb41165['messageId'];
+				$r['response_reason_code'] = $spb41165['messageId'];
 			}
 			if (isset($spb41165['authCode']) && !empty($spb41165['authCode'])) {
-				$resA['approval_code'] = $spb41165['authCode'];
+				$r['approval_code'] = $spb41165['authCode'];
 			}
 			if (isset($spb41165['avsResult']) && !empty($spb41165['avsResult'])) {
-				$resA['avs_result_code'] = $spb41165['avsResult'];
+				$r['avs_result_code'] = $spb41165['avsResult'];
 			}
 			if (isset($spb41165['trnId']) && !empty($spb41165['trnId'])) {
-				$resA['transaction_id'] = $spb41165['trnId'];
+				$r['transaction_id'] = $spb41165['trnId'];
 			}
-		} else {
-			$resA['response_code'] = '0';
-			$resA['response_subcode'] = '0';
-			$resA['response_reason_code'] = '0';
-			$resA['approval_code'] = '000000';
-			$resA['avs_result_code'] = 'P';
-			$resA['transaction_id'] = '0';
-			$resA['response_reason_text'] = '';
+		}
+		else {
+			$r['response_code'] = '0';
+			$r['response_subcode'] = '0';
+			$r['response_reason_code'] = '0';
+			$r['approval_code'] = '000000';
+			$r['avs_result_code'] = 'P';
+			$r['transaction_id'] = '0';
+			$r['response_reason_text'] = '';
 			if (isset($spb41165['messageText']) && !empty($spb41165['messageText'])) {
-				$resA['response_reason_text'] = $spb41165['messageText'];
+				$r['response_reason_text'] = $spb41165['messageText'];
 			}
 			if (empty($spb41165['errorFields'])) {
 				$spb41165['errorFields'] = 'Transaction has been DECLINED.';
 			}
-			$resA['response_reason_text'] .= '-' . $spb41165['errorFields'];
+			$r['response_reason_text'] .= '-' . $spb41165['errorFields'];
 		}
-		return $resA;
+		return $r;
 	}
 
 	/**
