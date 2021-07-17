@@ -146,13 +146,10 @@ final class Facade {
 			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
 			,'response_code' => '1'
 			,'response_reason_code' => '1'
-			,'response_reason_text' => '(TESTMODE2) This transaction has been approved.'
+			,'response_reason_text' => $r2->messageText()
 			,'response_subcode' => '1'
 			,'transaction_id' => '0'
 		]; /** @var array(string => mixed) $r */
-		if (isset($resA['messageText']) && !empty($resA['messageText'])) {
-			$r['response_reason_text'] = $resA['messageText'];
-		}
 		if ($resA['trnApproved'] == 1) {
 			$r = [
 				'response_code' => '1'

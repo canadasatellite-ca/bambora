@@ -46,9 +46,19 @@ final class Response extends \Df\Core\O {
 	 * If a system generated error occurs, validate your integration and website setup.»: https://mage2.pro/t/6280, Page 12.
 	 * @used-by valid()
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
-	 * @return string|$this
+	 * @return string
 	 */
 	function errorType() {return df_prop($this);}
+
+	/**
+	 * 2021-07-17
+	 * «Returns a basic approved/declined message that can be displayed to the customer on a confirmation page.
+	 * Review our gateway response message table for details.»
+	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return string
+	 */
+	function messageText() {return df_prop($this);}
 
 	/**
 	 * 2021-07-17
