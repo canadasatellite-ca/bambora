@@ -116,7 +116,7 @@ final class Facade {
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
-		$responseRaw = curl_exec($curl); /** @var string $responseRaw */
+		$resRaw = curl_exec($curl); /** @var string $resRaw */
 		$curlError = curl_error($curl); /** @var string $curlError */
 		curl_close($curl);
 		if ($curlError) {
@@ -127,51 +127,47 @@ final class Facade {
 		# "Beanstream: «Microsoft OLE DB Driver for SQL Server» / «TCP Provider: The wait operation timed out» /
 		# «C:\INETPUB\BEANSTREAM\ERRORPAGES\../admin/include/VBScript_ado_connection_v2.asp»":
 		# https://github.com/canadasatellite-ca/site/issues/18
-		if (df_contains($responseRaw, 'Microsoft OLE DB Driver for SQL Server')) {
-			df_log_l(__CLASS__, ['request' => $query, 'response' => $responseRaw], 'error-ole');
-			df_error('Error: ' . $responseRaw);
+		if (df_contains($resRaw, 'Microsoft OLE DB Driver for SQL Server')) {
+			df_log_l(__CLASS__, ['request' => $query, 'response' => $resRaw], 'error-ole');
+			df_error('Error: ' . $resRaw);
 		}
-		$sp1e8be2 = explode('&', $responseRaw);
-		$spb41165 = [];
-		foreach (@$sp1e8be2 as $sp107d68) {
-			list($sp005512, $sp5b9bbc) = explode('=', $sp107d68);
-			$spb41165[$sp005512] = strip_tags(urldecode($sp5b9bbc));
-		}
+		parse_str($resRaw, $resA); /** @var array(string => mixed) $resA */
 		# 2021-03-20 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 		# "Prevent the `Schogini_Beanstream` module from logging successful transactions to `beanstream.log`":
 		# https://github.com/canadasatellite-ca/site/issues/17
-		if ('N' !== ($errorType = dfa($spb41165, 'errorType', 'unknown'))) { /** @var string $errorType */
+		if ('N' !== ($errorType = dfa($resA, 'errorType', 'unknown'))) { /** @var string $errorType */
 			df_log_l(__CLASS__, [
-				'request' => $query, 'response parsed' => $spb41165, 'response raw' => $responseRaw
+				'request' => $query, 'response parsed' => $resA, 'response raw' => $resRaw
 			], "error-$errorType");
 		}
-		$r = []; /** @var array(string => mixed) $r */
-		$r['response_code'] = '1';
-		$r['response_subcode'] = '1';
-		$r['response_reason_code'] = '1';
-		$r['response_reason_text'] = '(TESTMODE2) This transaction has been approved.';
-		$r['approval_code'] = '000000';
-		$r['avs_result_code'] = 'P';
-		$r['transaction_id'] = '0';
-		$r['md5_hash'] = '382065EC3B4C2F5CDC424A730393D2DF';
-		$r['card_code_response'] = '';
-		if ($spb41165['trnApproved'] == 1) {
+		$r = [
+			'approval_code' => '000000'
+			,'avs_result_code' => 'P'
+			,'card_code_response' => ''
+			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
+			,'response_code' => '1'
+			,'response_reason_code' => '1'
+			,'response_reason_text' => '(TESTMODE2) This transaction has been approved.'
+			,'response_subcode' => '1'
+			,'transaction_id' => '0'
+		]; /** @var array(string => mixed) $r */
+		if ($resA['trnApproved'] == 1) {
 			$r['response_reason_text'] = '';
 			$r['response_code'] = '1';
-			if (isset($spb41165['messageText']) && !empty($spb41165['messageText'])) {
-				$r['response_reason_text'] = $spb41165['messageText'];
+			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
+				$r['response_reason_text'] = $resA['messageText'];
 			}
-			if (isset($spb41165['messageId']) && !empty($spb41165['messageId'])) {
-				$r['response_reason_code'] = $spb41165['messageId'];
+			if (isset($resA['messageId']) && !empty($resA['messageId'])) {
+				$r['response_reason_code'] = $resA['messageId'];
 			}
-			if (isset($spb41165['authCode']) && !empty($spb41165['authCode'])) {
-				$r['approval_code'] = $spb41165['authCode'];
+			if (isset($resA['authCode']) && !empty($resA['authCode'])) {
+				$r['approval_code'] = $resA['authCode'];
 			}
-			if (isset($spb41165['avsResult']) && !empty($spb41165['avsResult'])) {
-				$r['avs_result_code'] = $spb41165['avsResult'];
+			if (isset($resA['avsResult']) && !empty($resA['avsResult'])) {
+				$r['avs_result_code'] = $resA['avsResult'];
 			}
-			if (isset($spb41165['trnId']) && !empty($spb41165['trnId'])) {
-				$r['transaction_id'] = $spb41165['trnId'];
+			if (isset($resA['trnId']) && !empty($resA['trnId'])) {
+				$r['transaction_id'] = $resA['trnId'];
 			}
 		}
 		else {
@@ -182,13 +178,13 @@ final class Facade {
 			$r['avs_result_code'] = 'P';
 			$r['transaction_id'] = '0';
 			$r['response_reason_text'] = '';
-			if (isset($spb41165['messageText']) && !empty($spb41165['messageText'])) {
-				$r['response_reason_text'] = $spb41165['messageText'];
+			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
+				$r['response_reason_text'] = $resA['messageText'];
 			}
-			if (empty($spb41165['errorFields'])) {
-				$spb41165['errorFields'] = 'Transaction has been DECLINED.';
+			if (empty($resA['errorFields'])) {
+				$resA['errorFields'] = 'Transaction has been DECLINED.';
 			}
-			$r['response_reason_text'] .= '-' . $spb41165['errorFields'];
+			$r['response_reason_text'] .= '-' . $resA['errorFields'];
 		}
 		return $r;
 	}
