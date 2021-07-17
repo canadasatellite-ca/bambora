@@ -140,7 +140,7 @@ final class Facade {
 			df_log_l(__CLASS__, ['request' => $query, 'response' => $resA], "error-{$r2->errorType()}");
 		}
 		$r = [
-			'approval_code' => '000000'
+			'approval_code' => $r2->authCode()
 			,'avs_result_code' => 'P'
 			,'card_code_response' => ''
 			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
@@ -151,9 +151,6 @@ final class Facade {
 			,'transaction_id' => '0'
 		]; /** @var array(string => mixed) $r */
 		if ($r2->trnApproved()) {
-			if (isset($resA['authCode']) && !empty($resA['authCode'])) {
-				$r['approval_code'] = $resA['authCode'];
-			}
 			if (isset($resA['avsResult']) && !empty($resA['avsResult'])) {
 				$r['avs_result_code'] = $resA['avsResult'];
 			}
@@ -163,8 +160,7 @@ final class Facade {
 		}
 		else {
 			$r = [
-				'approval_code' => '000000'
-				,'avs_result_code' => 'P'
+				'avs_result_code' => 'P'
 				,'response_code' => '0'
 				,'response_subcode' => '0'
 				,'transaction_id' => '0'

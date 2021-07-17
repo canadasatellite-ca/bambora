@@ -37,6 +37,16 @@ namespace CanadaSatellite\Bambora;
 final class Response extends \Df\Core\O {
 	/**
 	 * 2021-07-17
+	 * «0-32 alphanumeric characters»
+	 * «If the transaction is approved this parameter contains a unique bank-issued code.»
+	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return string
+	 */
+	function authCode() {return df_prop($this);}
+
+	/**
+	 * 2021-07-17
 	 * 1) «1 character»
 	 * «Returns the value: N, S, or U.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
