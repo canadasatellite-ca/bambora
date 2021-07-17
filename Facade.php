@@ -151,9 +151,9 @@ final class Facade {
 			,'response_subcode' => '1'
 			,'transaction_id' => '0'
 		]; /** @var array(string => mixed) $r */
-			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
-				$r['response_reason_text'] = $resA['messageText'];
-			}
+		if (isset($resA['messageText']) && !empty($resA['messageText'])) {
+			$r['response_reason_text'] = $resA['messageText'];
+		}
 		if ($resA['trnApproved'] == 1) {
 			$r = [
 				'response_code' => '1'
