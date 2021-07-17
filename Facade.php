@@ -152,8 +152,10 @@ final class Facade {
 			,'transaction_id' => '0'
 		]; /** @var array(string => mixed) $r */
 		if ($resA['trnApproved'] == 1) {
-			$r['response_reason_text'] = '';
-			$r['response_code'] = '1';
+			$r = [
+				'response_code' => '1'
+				,'response_reason_text' => ''
+			] + $r;
 			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
 				$r['response_reason_text'] = $resA['messageText'];
 			}
@@ -171,13 +173,15 @@ final class Facade {
 			}
 		}
 		else {
-			$r['response_code'] = '0';
-			$r['response_subcode'] = '0';
-			$r['response_reason_code'] = '0';
-			$r['approval_code'] = '000000';
-			$r['avs_result_code'] = 'P';
-			$r['transaction_id'] = '0';
-			$r['response_reason_text'] = '';
+			$r = [
+				'approval_code' => '000000'
+				,'avs_result_code' => 'P'
+				,'response_code' => '0'
+				,'response_reason_code' => '0'
+				,'response_reason_text' => ''
+				,'response_subcode' => '0'
+				,'transaction_id' => '0'
+			] + $r;
 			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
 				$r['response_reason_text'] = $resA['messageText'];
 			}
