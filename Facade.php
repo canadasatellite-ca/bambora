@@ -148,19 +148,10 @@ final class Facade {
 			,'response_reason_code' => $r2->messageId()
 			,'response_reason_text' => $r2->messageText()
 			,'response_subcode' => '1'
-			,'transaction_id' => '0'
+			,'transaction_id' => $r2->trnId()
 		]; /** @var array(string => mixed) $r */
-		if ($r2->trnApproved()) {
-			if (isset($resA['trnId']) && !empty($resA['trnId'])) {
-				$r['transaction_id'] = $resA['trnId'];
-			}
-		}
-		else {
-			$r = [
-				'response_code' => '0'
-				,'response_subcode' => '0'
-				,'transaction_id' => '0'
-			] + $r;
+		if (!$r2->trnApproved()) {
+			$r = ['response_code' => '0', 'response_subcode' => '0'] + $r;
 			if (empty($resA['errorFields'])) {
 				$resA['errorFields'] = 'Transaction has been DECLINED.';
 			}

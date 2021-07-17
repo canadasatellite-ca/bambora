@@ -102,6 +102,16 @@ final class Response extends \Df\Core\O {
 
 	/**
 	 * 2021-07-17
+	 * «8 digits»
+	 * «Unique id number identifying an individual transaction.»
+	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return bool
+	 */
+	function trnId() {return (int)df_prop($this);}
+
+	/**
+	 * 2021-07-17
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return bool
 	 */
