@@ -2,7 +2,7 @@
 namespace CanadaSatellite\Bambora;
 /**
  * 2021-07-17
- * A response:
+ * 1) A response:
  * 	{
  *		"authCode": "TEST",
  *		"avsAddrMatch": "0",
@@ -32,5 +32,19 @@ namespace CanadaSatellite\Bambora;
  *		"trnOrderNumber": "190630",
  *		"trnType": "PA"
  *	}
+ * 2) «Bambora response variables»: https://support.na.bambora.com/bic/w/docs/response-variables.htm
  */
-final class Response extends \Df\Core\O {}
+final class Response extends \Df\Core\O {
+	/**
+	 * 2021-07-17
+	 * 1) «1 character»
+	 * «Returns the value: N, S, or U.»
+	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * 2) «The `errorType` response variable will indicate “U” if a form field error occurs.»: https://mage2.pro/t/6280, Page 11.
+	 * 3) «System generated errors can be identified in a Server to Server integration
+	 * by a response message “errorType=S” in the Beanstream response string.
+	 * If a system generated error occurs, validate your integration and website setup.»: https://mage2.pro/t/6280, Page 12.
+	 * @return string|$this
+	 */
+	function errorType() {return df_prop($this);}
+}

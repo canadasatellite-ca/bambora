@@ -132,6 +132,7 @@ final class Facade {
 			df_error('Error: ' . $resRaw);
 		}
 		parse_str($resRaw, $resA); /** @var array(string => mixed) $resA */
+		$r2 = new Response($resA); /** @var Response $r2 */
 		# 2021-03-20 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 		# "Prevent the `Schogini_Beanstream` module from logging successful transactions to `beanstream.log`":
 		# https://github.com/canadasatellite-ca/site/issues/17
@@ -237,8 +238,8 @@ final class Facade {
 	 */
 	static function p(M $m, $type, $a) {
 		$i = new self($m); /** @var self $i */
-		$r = new _DO; /** @var _DO $r */
 		$resA = $i->api($type, $a); /** @var array(string => mixed) $resA */
+		$r = new _DO; /** @var _DO $r */
 		$r->setResponseCode((int)str_replace('"', '', $resA['response_code']));
 		$r->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
 		$r->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
