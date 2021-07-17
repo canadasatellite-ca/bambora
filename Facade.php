@@ -20,7 +20,7 @@ final class Facade {
 
 	/**
 	 * 2021-06-29
-	 * @used-by post()
+	 * @used-by p()
 	 * @param string $type
 	 * @param float|string $a
 	 * @return array
@@ -195,7 +195,7 @@ final class Facade {
 	/**
 	 * 2021-07-16
 	 * @used-by api()
-	 * @used-by post()
+	 * @used-by p()
 	 * @return OA
 	 */
 	private function ba() {return $this->o()->getBillingAddress();}
@@ -221,39 +221,10 @@ final class Facade {
 	 * 2021-07-16
 	 * @used-by ba()
 	 * @used-by api()
-	 * @used-by post()
+	 * @used-by p()
 	 * @return O
 	 */
 	private function o() {return $this->ii()->getOrder();}
-
-	/**
-	 * 2021-06-28
-	 * @used-by p()
-	 * @param string $type
-	 * @param float|string $a
-	 * @return _DO
-	 * @throws LE
-	 */
-	private function post($type, $a) {
-		$res = new _DO;
-		$resA = $this->api($type, $a); /** @var array(string => mixed) $resA */
-		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
-		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
-		$res->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
-		$res->setResponseReasonText($resA['response_reason_text']);
-		$res->setApprovalCode($resA['approval_code']);
-		$res->setAvsResultCode($resA['avs_result_code']);
-		$res->setTransactionId($resA['transaction_id']);
-		$res->setInvoiceNumber($this->o()->getIncrementId());
-		$res->setDescription('');
-		$res->setAmount($a);
-		$res->setMethod(null);
-		$res->setTransactionType($type);
-		$res->setCustomerId($this->ba()->getCustomerId());
-		$res->setMd5Hash($resA['md5_hash']);
-		$res->setCardCodeResponseCode($resA['card_code_response']);
-		return $res;
-	}
 
 	/**
 	 * 2021-07-17
@@ -268,7 +239,24 @@ final class Facade {
 	 */
 	static function p(M $m, $type, $a) {
 		$i = new self($m); /** @var self $i */
-		return $i->post($type, $a);
+		$r = new _DO; /** @var _DO $r */
+		$resA = $i->api($type, $a); /** @var array(string => mixed) $resA */
+		$r->setResponseCode((int)str_replace('"', '', $resA['response_code']));
+		$r->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
+		$r->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
+		$r->setResponseReasonText($resA['response_reason_text']);
+		$r->setApprovalCode($resA['approval_code']);
+		$r->setAvsResultCode($resA['avs_result_code']);
+		$r->setTransactionId($resA['transaction_id']);
+		$r->setInvoiceNumber($i->o()->getIncrementId());
+		$r->setDescription('');
+		$r->setAmount($a);
+		$r->setMethod(null);
+		$r->setTransactionType($type);
+		$r->setCustomerId($i->ba()->getCustomerId());
+		$r->setMd5Hash($resA['md5_hash']);
+		$r->setCardCodeResponseCode($resA['card_code_response']);
+		return $r;
 	}
 
 	/**
