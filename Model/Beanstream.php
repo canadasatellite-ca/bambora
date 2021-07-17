@@ -49,7 +49,11 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	function authorize(II $i, $a) {
 		$m = false; /** @var string|false $m */
 		$res = F::p($this, F::AUTH_ONLY, $a); /** @var _DO $res */
-		$i->setCcApproval($res->getApprovalCode())->setLastTransId($res->getTransactionId())->setCcTransId($res->getTransactionId())->setCcAvsStatus($res->getAvsResultCode())->setCcCidStatus($res->getCardCodeResponseCode());
+		$i->setCcApproval($res->getApprovalCode());
+		$i->setCcAvsStatus($res->getAvsResultCode());
+		$i->setCcCidStatus($res->getCardCodeResponseCode());
+		$i->setCcTransId($res->getTransactionId());
+		$i->setLastTransId($res->getTransactionId());
 		$reasonC = $res->getResponseReasonCode();
 		$reasonS = $res->getResponseReasonText();
 		switch ($res->getResponseCode()) {
