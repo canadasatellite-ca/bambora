@@ -116,22 +116,22 @@ final class Facade {
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
-		$spf8f74c = curl_exec($curl);
-		$sp35fa42 = curl_error($curl);
+		$responseRaw = curl_exec($curl); /** @var string $responseRaw */
+		$curlError = curl_error($curl); /** @var string $curlError */
 		curl_close($curl);
-		if ($sp35fa42 != '') {
-			df_log_l(__CLASS__, ['request' => $query, 'response' => $sp35fa42], 'error-curl');
-			df_error('Error: ' . $sp35fa42);
+		if ($curlError) {
+			df_log_l(__CLASS__, ['request' => $query, 'response' => $curlError], 'error-curl');
+			df_error("Error: $curlError");
 		}
 		# 2021-03-20 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 		# "Beanstream: «Microsoft OLE DB Driver for SQL Server» / «TCP Provider: The wait operation timed out» /
 		# «C:\INETPUB\BEANSTREAM\ERRORPAGES\../admin/include/VBScript_ado_connection_v2.asp»":
 		# https://github.com/canadasatellite-ca/site/issues/18
-		if (df_contains($spf8f74c, 'Microsoft OLE DB Driver for SQL Server')) {
-			df_log_l(__CLASS__, ['request' => $query, 'response' => $spf8f74c], 'error-ole');
-			df_error('Error: ' . $spf8f74c);
+		if (df_contains($responseRaw, 'Microsoft OLE DB Driver for SQL Server')) {
+			df_log_l(__CLASS__, ['request' => $query, 'response' => $responseRaw], 'error-ole');
+			df_error('Error: ' . $responseRaw);
 		}
-		$sp1e8be2 = explode('&', $spf8f74c);
+		$sp1e8be2 = explode('&', $responseRaw);
 		$spb41165 = [];
 		foreach (@$sp1e8be2 as $sp107d68) {
 			list($sp005512, $sp5b9bbc) = explode('=', $sp107d68);
@@ -142,7 +142,7 @@ final class Facade {
 		# https://github.com/canadasatellite-ca/site/issues/17
 		if ('N' !== ($errorType = dfa($spb41165, 'errorType', 'unknown'))) { /** @var string $errorType */
 			df_log_l(__CLASS__, [
-				'request' => $query, 'response parsed' => $spb41165, 'response raw' => $spf8f74c
+				'request' => $query, 'response parsed' => $spb41165, 'response raw' => $responseRaw
 			], "error-$errorType");
 		}
 		$r = []; /** @var array(string => mixed) $r */
