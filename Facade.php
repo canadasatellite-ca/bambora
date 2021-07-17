@@ -151,14 +151,14 @@ final class Facade {
 			,'response_subcode' => '1'
 			,'transaction_id' => '0'
 		]; /** @var array(string => mixed) $r */
+			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
+				$r['response_reason_text'] = $resA['messageText'];
+			}
 		if ($resA['trnApproved'] == 1) {
 			$r = [
 				'response_code' => '1'
 				,'response_reason_text' => ''
 			] + $r;
-			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
-				$r['response_reason_text'] = $resA['messageText'];
-			}
 			if (isset($resA['messageId']) && !empty($resA['messageId'])) {
 				$r['response_reason_code'] = $resA['messageId'];
 			}
@@ -182,9 +182,6 @@ final class Facade {
 				,'response_subcode' => '0'
 				,'transaction_id' => '0'
 			] + $r;
-			if (isset($resA['messageText']) && !empty($resA['messageText'])) {
-				$r['response_reason_text'] = $resA['messageText'];
-			}
 			if (empty($resA['errorFields'])) {
 				$resA['errorFields'] = 'Transaction has been DECLINED.';
 			}
