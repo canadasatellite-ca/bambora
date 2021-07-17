@@ -52,6 +52,17 @@ final class Response extends \Df\Core\O {
 
 	/**
 	 * 2021-07-17
+	 * «1-3 digits»
+	 * «References a detailed approved/declined transaction response message.
+	 * Review our gateway response message table for a full description of each message.»
+	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return int
+	 */
+	function messageId() {return (int)df_prop($this);}
+
+	/**
+	 * 2021-07-17
 	 * «Returns a basic approved/declined message that can be displayed to the customer on a confirmation page.
 	 * Review our gateway response message table for details.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm

@@ -145,16 +145,12 @@ final class Facade {
 			,'card_code_response' => ''
 			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
 			,'response_code' => '1'
-			,'response_reason_code' => '1'
+			,'response_reason_code' => $r2->messageId()
 			,'response_reason_text' => $r2->messageText()
 			,'response_subcode' => '1'
 			,'transaction_id' => '0'
 		]; /** @var array(string => mixed) $r */
 		if ($r2->trnApproved()) {
-			$r = ['response_code' => '1', 'response_reason_text' => ''] + $r;
-			if (isset($resA['messageId']) && !empty($resA['messageId'])) {
-				$r['response_reason_code'] = $resA['messageId'];
-			}
 			if (isset($resA['authCode']) && !empty($resA['authCode'])) {
 				$r['approval_code'] = $resA['authCode'];
 			}
@@ -170,8 +166,6 @@ final class Facade {
 				'approval_code' => '000000'
 				,'avs_result_code' => 'P'
 				,'response_code' => '0'
-				,'response_reason_code' => '0'
-				,'response_reason_text' => ''
 				,'response_subcode' => '0'
 				,'transaction_id' => '0'
 			] + $r;
