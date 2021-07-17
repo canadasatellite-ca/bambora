@@ -5,7 +5,7 @@ namespace CanadaSatellite\Bambora;
 final class Regions {
 	/**
 	 * 2021-07-14
-	 * @used-by \CanadaSatellite\Bambora\Facade::beanstreamapi()
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return array(string => string)
 	 */
 	static function ca() {return [
@@ -26,7 +26,7 @@ final class Regions {
 
 	/**
 	 * 2021-07-14
-	 * @used-by \CanadaSatellite\Bambora\Facade::beanstreamapi()
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return array(string => string)
 	 */
 	static function us() {return [

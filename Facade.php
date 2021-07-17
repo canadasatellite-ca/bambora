@@ -19,14 +19,6 @@ final class Facade {
 	private function __construct(M $m) {$this->_m = $m;}
 
 	/**
-	 * 2021-07-16
-	 * @used-by beanstreamapi()
-	 * @used-by post()
-	 * @return OA
-	 */
-	private function ba() {return $this->o()->getBillingAddress();}
-
-	/**
 	 * 2021-06-29
 	 * @used-by post()
 	 * @param string $type
@@ -34,7 +26,7 @@ final class Facade {
 	 * @return array
 	 * @throws LE
 	 */
-	private function beanstreamapi($type, $a) {
+	private function api($type, $a) {
 		$ba = $this->ba(); /** @var OA $ba */
 		$state = dftr($ba->getRegion(), Regions::ca()); /** @var string $state */
 		$country = $ba->getCountryId() ?: (!$state ? null : (
@@ -201,8 +193,16 @@ final class Facade {
 	}
 
 	/**
+	 * 2021-07-16
+	 * @used-by api()
+	 * @used-by post()
+	 * @return OA
+	 */
+	private function ba() {return $this->o()->getBillingAddress();}
+
+	/**
 	 * 2021-07-14
-	 * @used-by beanstreamapi()
+	 * @used-by api()
 	 * @param string $k
 	 * @return mixed
 	 */
@@ -210,7 +210,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-14
-	 * @used-by beanstreamapi()
+	 * @used-by api()
 	 * @used-by o()
 	 * @param string|null $k [optional]
 	 * @return II|I|OP|QP
@@ -220,7 +220,7 @@ final class Facade {
 	/**
 	 * 2021-07-16
 	 * @used-by ba()
-	 * @used-by beanstreamapi()
+	 * @used-by api()
 	 * @used-by post()
 	 * @return O
 	 */
@@ -236,7 +236,7 @@ final class Facade {
 	 */
 	private function post($type, $a) {
 		$res = new _DO;
-		$resA = $this->beanstreamapi($type, $a); /** @var array(string => mixed) $resA */
+		$resA = $this->api($type, $a); /** @var array(string => mixed) $resA */
 		$res->setResponseCode((int)str_replace('"', '', $resA['response_code']));
 		$res->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
 		$res->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
@@ -282,7 +282,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-06
-	 * @used-by beanstreamapi()
+	 * @used-by api()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
 	 * @var string
 	 */
@@ -290,7 +290,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-06
-	 * @used-by beanstreamapi()
+	 * @used-by api()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
 	 * @var string
 	 */
@@ -298,7 +298,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-01
-	 * @used-by beanstreamapi()
+	 * @used-by api()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
 	 * @var string
 	 */
@@ -306,7 +306,7 @@ final class Facade {
 
 	/**
 	 * 2021-07-01
-	 * @used-by beanstreamapi()
+	 * @used-by api()
 	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
 	 * @var string
 	 */
