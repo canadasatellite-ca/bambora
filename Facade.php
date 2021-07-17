@@ -136,10 +136,8 @@ final class Facade {
 		# 2021-03-20 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 		# "Prevent the `Schogini_Beanstream` module from logging successful transactions to `beanstream.log`":
 		# https://github.com/canadasatellite-ca/site/issues/17
-		if ('N' !== ($errorType = dfa($resA, 'errorType', 'unknown'))) { /** @var string $errorType */
-			df_log_l(__CLASS__, [
-				'request' => $query, 'response parsed' => $resA, 'response raw' => $resRaw
-			], "error-$errorType");
+		if (!$r2->valid()) { /** @var string $errorType */
+			df_log_l(__CLASS__, ['request' => $query, 'response' => $resA], "error-{$r2->errorType()}");
 		}
 		$r = [
 			'approval_code' => '000000'

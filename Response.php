@@ -44,7 +44,16 @@ final class Response extends \Df\Core\O {
 	 * 3) «System generated errors can be identified in a Server to Server integration
 	 * by a response message “errorType=S” in the Beanstream response string.
 	 * If a system generated error occurs, validate your integration and website setup.»: https://mage2.pro/t/6280, Page 12.
+	 * @used-by valid()
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return string|$this
 	 */
 	function errorType() {return df_prop($this);}
+
+	/**
+	 * 2021-07-17
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return bool
+	 */
+	function valid() {return 'N' === $this->errorType();}
 }
