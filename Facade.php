@@ -141,7 +141,7 @@ final class Facade {
 		}
 		$r = [
 			'approval_code' => $r2->authCode()
-			,'avs_result_code' => 'P'
+			,'avs_result_code' => $r2->avsResult()
 			,'card_code_response' => ''
 			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
 			,'response_code' => '1'
@@ -151,17 +151,13 @@ final class Facade {
 			,'transaction_id' => '0'
 		]; /** @var array(string => mixed) $r */
 		if ($r2->trnApproved()) {
-			if (isset($resA['avsResult']) && !empty($resA['avsResult'])) {
-				$r['avs_result_code'] = $resA['avsResult'];
-			}
 			if (isset($resA['trnId']) && !empty($resA['trnId'])) {
 				$r['transaction_id'] = $resA['trnId'];
 			}
 		}
 		else {
 			$r = [
-				'avs_result_code' => 'P'
-				,'response_code' => '0'
+				'response_code' => '0'
 				,'response_subcode' => '0'
 				,'transaction_id' => '0'
 			] + $r;
