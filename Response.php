@@ -62,6 +62,15 @@ final class Response extends \Df\Core\O {
 
 	/**
 	 * 2021-07-17
+	 * «0 – Transaction refused, 1 – Transaction approved»
+	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return bool
+	 */
+	function trnApproved() {return !!df_prop($this);}
+
+	/**
+	 * 2021-07-17
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return bool
 	 */
