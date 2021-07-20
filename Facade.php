@@ -132,25 +132,25 @@ final class Facade {
 			df_error('Error: ' . $resRaw);
 		}
 		parse_str($resRaw, $resA); /** @var array(string => mixed) $resA */
-		$r2 = new Response($resA); /** @var Response $r2 */
+		$r = new Response($resA); /** @var Response $r */
 		# 2021-03-20 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 		# "Prevent the `Schogini_Beanstream` module from logging successful transactions to `beanstream.log`":
 		# https://github.com/canadasatellite-ca/site/issues/17
-		if (!$r2->valid()) { /** @var string $errorType */
-			df_log_l(__CLASS__, ['request' => $query, 'response' => $resA], "error-{$r2->errorType()}");
+		if (!$r->valid()) { /** @var string $errorType */
+			df_log_l(__CLASS__, ['request' => $query, 'response' => $resA], "error-{$r->errorType()}");
 		}
 		return [
-			'approval_code' => $r2->authCode()
-			,'avs_result_code' => $r2->avsResult()
+			'approval_code' => $r->authCode()
+			,'avs_result_code' => $r->avsResult()
 			,'card_code_response' => ''
 			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
-			,'response_code' => (int)$r2->trnApproved()
-			,'response_reason_code' => $r2->messageId()
-			,'response_reason_text' => df_ccc('-', $r2->messageText(),
-				$r2->trnApproved() ? '' : ($r2->errorFields() ?: 'Transaction has been DECLINED.')
+			,'response_code' => (int)$r->trnApproved()
+			,'response_reason_code' => $r->messageId()
+			,'response_reason_text' => df_ccc('-', $r->messageText(),
+				$r->trnApproved() ? '' : ($r->errorFields() ?: 'Transaction has been DECLINED.')
 			)
-			,'response_subcode' => (int)$r2->trnApproved()
-			,'transaction_id' => $r2->trnId()
+			,'response_subcode' => (int)$r->trnApproved()
+			,'transaction_id' => $r->trnId()
 		];
 	}
 
