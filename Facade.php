@@ -143,12 +143,11 @@ final class Facade {
 			'approval_code' => $r->authCode()
 			,'avs_result_code' => $r->avsResult()
 			,'card_code_response' => ''
-			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
 			,'response_code' => (int)$r->trnApproved()
 			,'response_reason_code' => $r->messageId()
-			,'response_reason_text' => df_ccc('-', $r->messageText(),
-				$r->trnApproved() ? '' : ($r->errorFields() ?: 'Transaction has been DECLINED.')
-			)
+			,'response_reason_text' => df_ccc('-', $r->messageText(), $r->trnApproved() ? '' : (
+				$r->errorFields() ?: 'Transaction has been DECLINED.'
+			))
 			,'response_subcode' => (int)$r->trnApproved()
 			,'transaction_id' => $r->trnId()
 		];
@@ -216,7 +215,6 @@ final class Facade {
 		$r->setMethod(null);
 		$r->setTransactionType($type);
 		$r->setCustomerId($i->ba()->getCustomerId());
-		$r->setMd5Hash($resA['md5_hash']);
 		$r->setCardCodeResponseCode($resA['card_code_response']);
 		return $r;
 	}
