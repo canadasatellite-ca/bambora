@@ -139,21 +139,19 @@ final class Facade {
 		if (!$r2->valid()) { /** @var string $errorType */
 			df_log_l(__CLASS__, ['request' => $query, 'response' => $resA], "error-{$r2->errorType()}");
 		}
-		$r = [
+		return [
 			'approval_code' => $r2->authCode()
 			,'avs_result_code' => $r2->avsResult()
 			,'card_code_response' => ''
 			,'md5_hash' => '382065EC3B4C2F5CDC424A730393D2DF'
 			,'response_code' => (int)$r2->trnApproved()
 			,'response_reason_code' => $r2->messageId()
-			,'response_reason_text' => $r2->messageText()
+			,'response_reason_text' => df_ccc('-', $r2->messageText(),
+				$r2->trnApproved() ? '' : ($r2->errorFields() ?: 'Transaction has been DECLINED.')
+			)
 			,'response_subcode' => (int)$r2->trnApproved()
 			,'transaction_id' => $r2->trnId()
-		]; /** @var array(string => mixed) $r */
-		if (!$r2->trnApproved()) {
-			$r['response_reason_text'] .= '-' . ($r2->errorFields() ?: 'Transaction has been DECLINED.');
-		}
-		return $r;
+		];
 	}
 
 	/**
