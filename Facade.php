@@ -200,21 +200,21 @@ final class Facade {
 	 */
 	static function p(M $m, $type, $a) {
 		$i = new self($m); /** @var self $i */
-		$resA = $i->api($type, $a); /** @var array(string => mixed) $resA */
+		$r = $i->api($type, $a); /** @var array(string => mixed) $r */
 		return new _DO([
 			'amount' => $a
-			,'approval_code' => $resA['approval_code']
-			,'avs_result_code' => $resA['avs_result_code']
-			,'card_code_response_code' => $resA['card_code_response']
+			,'approval_code' => $r['approval_code']
+			,'avs_result_code' => $r['avs_result_code']
+			,'card_code_response_code' => $r['card_code_response']
 			,'customer_id' => $i->ba()->getCustomerId()
 			,'description' => ''
 			,'invoice_number' => $i->o()->getIncrementId()
 			,'method' => null
-			,'response_code' => (int)str_replace('"', '', $resA['response_code'])
-			,'response_reason_code' => (int)str_replace('"', '', $resA['response_reason_code'])
-			,'response_reason_text' => $resA['response_reason_text']
-			,'response_subcode' => (int)str_replace('"', '', $resA['response_subcode'])
-			,'transaction_id' => $resA['transaction_id']
+			,'response_code' => (int)str_replace('"', '', $r['response_code'])
+			,'response_reason_code' => (int)str_replace('"', '', $r['response_reason_code'])
+			,'response_reason_text' => $r['response_reason_text']
+			,'response_subcode' => (int)str_replace('"', '', $r['response_subcode'])
+			,'transaction_id' => $r['transaction_id']
 			,'transaction_type' => $type
 		]);
 	}
