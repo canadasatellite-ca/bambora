@@ -56,6 +56,19 @@ final class Response extends \Df\Core\O {
 	function avsResult() {return 1 === (int)df_prop($this);}
 
 	/**
+	 * 2021-07-20
+	 * 1) «List of fields»
+	 * «For a user generated error, this variable includes a list of fields that failed form validation.
+	 * Notify the customer that they must correct these fields before the transaction can be completed.»
+	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * 2) «The `errorFields` variable will contain a list of fields that failed validation.»
+	 * https://mage2.pro/t/6280, Page 11.
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return string
+	 */
+	function errorFields() {return df_prop($this);}
+
+	/**
 	 * 2021-07-17
 	 * 1) «1 character»
 	 * «Returns the value: N, S, or U.»

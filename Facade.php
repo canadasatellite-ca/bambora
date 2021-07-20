@@ -151,10 +151,7 @@ final class Facade {
 			,'transaction_id' => $r2->trnId()
 		]; /** @var array(string => mixed) $r */
 		if (!$r2->trnApproved()) {
-			if (empty($resA['errorFields'])) {
-				$resA['errorFields'] = 'Transaction has been DECLINED.';
-			}
-			$r['response_reason_text'] .= '-' . $resA['errorFields'];
+			$r['response_reason_text'] .= '-' . ($r2->errorFields() ?: 'Transaction has been DECLINED.');
 		}
 		return $r;
 	}
