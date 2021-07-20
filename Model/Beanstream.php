@@ -2,6 +2,7 @@
 namespace CanadaSatellite\Bambora\Model;
 use CanadaSatellite\Bambora\BankCardNetworkDetector;
 use CanadaSatellite\Bambora\Facade as F;
+use CanadaSatellite\Bambora\Response;
 use Magento\Framework\DataObject as _DO;
 use Magento\Framework\Exception\LocalizedException as LE;
 use Magento\Framework\ObjectManager\NoninterceptableInterface as INonInterceptable;
@@ -47,33 +48,22 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 * @throws LE
 	 */
 	function authorize(II $i, $a) {
-		$m = false; /** @var string|false $m */
-		$res = F::p($this, F::AUTH_ONLY, $a); /** @var _DO $res */
-		$i->setCcApproval($res->getApprovalCode());
-		$i->setCcAvsStatus($res->getAvsResultCode());
-		$i->setCcCidStatus($res->getCardCodeResponseCode());
-		$i->setCcTransId($res->getTransactionId());
-		$i->setLastTransId($res->getTransactionId());
-		$reasonC = $res->getResponseReasonCode();
-		$reasonS = $res->getResponseReasonText();
-		switch ($res->getResponseCode()) {
-			case self::$APPROVED:
-				$i->setStatus(self::STATUS_APPROVED);
-				if ($res->getTransactionId() != $i->getParentTransactionId()) {
-					$i->setTransactionId($res->getTransactionId());
-				}
-				$i->setIsTransactionClosed(0)->setTransactionAdditionalInfo('real_transaction_id', $res->getTransactionId());
-				break;
-			case 2:
-				$m = "Payment authorization transaction has been declined. \n$reasonS";
-				break;
-			default:
-				$m = "Payment authorization error. \n$reasonS";
+		$res = F::p($this, F::AUTH_ONLY, $a); /** @var Response $res */
+		$i->setCcApproval($res->authCode());
+		$i->setCcAvsStatus($res->avsResult());
+		$i->setCcCidStatus($res->avsResult());
+		$i->setCcTransId($res->trnId());
+		$i->setLastTransId($res->trnId());
+		$reasonS = $res->reason();
+		if (!$res->trnApproved()) {
+			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
+			df_error("Payment authorization error. \n$reasonS");
 		}
-		if ($m) {
-			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->getData()]);
-			self::err($m);
+		$i->setStatus(self::STATUS_APPROVED);
+		if ($res->trnId() != $i->getParentTransactionId()) {
+			$i->setTransactionId($res->trnId());
 		}
+		$i->setIsTransactionClosed(0)->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 		return $this;
 	}
 
@@ -95,27 +85,21 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 * @throws LE
 	 */
 	function capture(II $i, $a) {
-		$m = false; /** @var string|false $m */
 		$type = $i->getParentTransactionId() ? F::PRIOR_AUTH_CAPTURE : F::AUTH_CAPTURE; /** @var string $type */
-		$res = F::p($this, $type, $a); /** @var _DO $res */
-		if ($res->getResponseCode() == self::$APPROVED) {
-			$i->setStatus(self::STATUS_APPROVED);
-			$i->setCcTransId($res->getTransactionId());
-			$i->setLastTransId($res->getTransactionId());
-			if ($res->getTransactionId() != $i->getParentTransactionId()) {
-				$i->setTransactionId($res->getTransactionId());
-			}
-			$i->setIsTransactionClosed(0)->setTransactionAdditionalInfo('real_transaction_id', $res->getTransactionId());
-		}
-		else {
-			$m = $res->getResponseReasonText() ?: 'Error in capturing the payment';
+		$res = F::p($this, $type, $a); /** @var Response $res */
+		if (!$res->trnApproved()) {
 			$oq = $i->getOrder() ?: $i->getQuote();
-			$oq->addStatusToHistory($oq->getStatus(), urldecode($m) . ' at Beanstream', $m . ' from Beanstream');
+			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
+			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
+			df_error("Payment capturing error.\n{$res->reason()}");
 		}
-		if ($m) {
-			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->getData()]);
-			self::err($m);
+		$i->setStatus(self::STATUS_APPROVED);
+		$i->setCcTransId($res->trnId());
+		$i->setLastTransId($res->trnId());
+		if ($res->trnId() != $i->getParentTransactionId()) {
+			$i->setTransactionId($res->trnId());
 		}
+		$i->setIsTransactionClosed(0)->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 		return $this;
 	}
 
@@ -166,24 +150,20 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 * @return $this
 	 */
 	function refund(II $i, $a) {
-		$m = false; /** @var Phrase|string|false $m */
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$res = F::p($this, 'REFUND', $a);
-		if ($res->getResponseCode() == self::$APPROVED) {
-			$i->setStatus(self::STATUS_SUCCESS);
-			if ($res->getTransactionId() != $parentId) {
-				$i->setTransactionId($res->getTransactionId());
-			}
-			$sp41f7d8 = $i->getOrder()->canCreditmemo() ? 0 : 1;
-			$i->setIsTransactionClosed(1)->setShouldCloseParentTransaction($sp41f7d8)->setTransactionAdditionalInfo('real_transaction_id', $res->getTransactionId());
+		$res = F::p($this, 'REFUND', $a); /** @var Response $res */
+		if (!$res->trnApproved()) {
+			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
+			df_error($res->reason());
 		}
-		else {
-			$m = $res->getResponseReasonText();
+		$i->setStatus(self::STATUS_SUCCESS);
+		if ($res->trnId() != $parentId) {
+			$i->setTransactionId($res->trnId());
 		}
-		if ($m !== false) {
-			self::err($m);
-		}
+		$i->setIsTransactionClosed(1);
+		$i->setShouldCloseParentTransaction($i->getOrder()->canCreditmemo() ? 0 : 1);
+		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 		return $this;
 	}
 	
@@ -231,17 +211,18 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	function void(II $i) {
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$res = F::p($this, F::VOID, 0.0);
-		if (self::$APPROVED != $res->getResponseCode()) {
-			self::err($res->getResponseReasonText());
+		$res = F::p($this, F::VOID, 0.0); /** @var Response $res */
+		if (!$res->trnApproved()) {
+			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
+			df_error($res->reason());
 		}
 		$i->setStatus(self::STATUS_VOID);
-		if ($res->getTransactionId() != $parentId) {
-			$i->setTransactionId($res->getTransactionId());
+		if ($res->trnId() != $parentId) {
+			$i->setTransactionId($res->trnId());
 		}
 		$i->setIsTransactionClosed(1);
 		$i->setShouldCloseParentTransaction(1);
-		$i->setTransactionAdditionalInfo('real_transaction_id', $res->getTransactionId());
+		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 		return $this;
 	}
 
@@ -260,7 +241,6 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	/**
 	 * 2021-07-01 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 	 * "Refactor the `Schogini_Beanstream` module": https://github.com/canadasatellite-ca/bambora/issues/1
-	 * @used-by authorize()
 	 * @used-by capture()
 	 * @used-by refund()
 	 * @used-by void()

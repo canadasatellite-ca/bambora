@@ -185,29 +185,11 @@ final class Facade {
 	 * @param M $m
 	 * @param string $type
 	 * @param float|string $a
-	 * @return _DO
+	 * @return Response
 	 */
 	static function p(M $m, $type, $a) {
 		$i = new self($m); /** @var self $i */
-		$r = $i->api($type, $a); /** @var Response $r */
-		return new _DO([
-			'amount' => $a
-			,'approval_code' => $r->authCode()
-			,'avs_result_code' => $r->avsResult()
-			,'card_code_response_code' => ''
-			,'customer_id' => $i->ba()->getCustomerId()
-			,'description' => ''
-			,'invoice_number' => $i->o()->getIncrementId()
-			,'method' => null
-			,'response_code' => (int)$r->trnApproved()
-			,'response_reason_code' => $r->messageId()
-			,'response_reason_text' => df_ccc('-', $r->messageText(), $r->trnApproved() ? '' : (
-				$r->errorFields() ?: 'Transaction has been DECLINED.'
-			))
-			,'response_subcode' => (int)$r->trnApproved()
-			,'transaction_id' => $r->trnId()
-			,'transaction_type' => $type
-		]);
+		return $i->api($type, $a);
 	}
 
 	/**

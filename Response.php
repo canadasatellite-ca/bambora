@@ -41,6 +41,7 @@ final class Response extends \Df\Core\O {
 	 * «If the transaction is approved this parameter contains a unique bank-issued code.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
 	 * @return string
 	 */
 	function authCode() {return df_prop($this);}
@@ -51,6 +52,7 @@ final class Response extends \Df\Core\O {
 	 * «1 – if AVS was validated with both a match against address, and a match against postal/ZIP code»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
 	 * @return bool
 	 */
 	function avsResult() {return 1 === (int)df_prop($this);}
@@ -63,6 +65,7 @@ final class Response extends \Df\Core\O {
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * 2) «The `errorFields` variable will contain a list of fields that failed validation.»
 	 * https://mage2.pro/t/6280, Page 11.
+	 * @used-by reason()
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return string
 	 */
@@ -99,16 +102,34 @@ final class Response extends \Df\Core\O {
 	 * «Returns a basic approved/declined message that can be displayed to the customer on a confirmation page.
 	 * Review our gateway response message table for details.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by reason()
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return string
 	 */
 	function messageText() {return df_prop($this);}
 
 	/**
+	 * 2021-07-20
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
+	 * @return string
+	 */
+	function reason() {return df_ccc('-', $this->messageText(), $this->trnApproved() ? '' : (
+		$this->errorFields() ?: 'Transaction has been DECLINED.'
+	));}
+
+	/**
 	 * 2021-07-17
 	 * «0 – Transaction refused, 1 – Transaction approved»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by reason()
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
 	 * @return bool
 	 */
 	function trnApproved() {return !!df_prop($this);}
@@ -119,6 +140,10 @@ final class Response extends \Df\Core\O {
 	 * «Unique id number identifying an individual transaction.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
+	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
 	 * @return bool
 	 */
 	function trnId() {return (int)df_prop($this);}
