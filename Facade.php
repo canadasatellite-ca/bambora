@@ -23,7 +23,7 @@ final class Facade {
 	 * @used-by p()
 	 * @param string $type
 	 * @param float|string $a
-	 * @return array
+	 * @return Response
 	 * @throws LE
 	 */
 	private function api($type, $a) {
@@ -139,18 +139,7 @@ final class Facade {
 		if (!$r->valid()) { /** @var string $errorType */
 			df_log_l(__CLASS__, ['request' => $query, 'response' => $resA], "error-{$r->errorType()}");
 		}
-		return [
-			'approval_code' => $r->authCode()
-			,'avs_result_code' => $r->avsResult()
-			,'card_code_response' => ''
-			,'response_code' => (int)$r->trnApproved()
-			,'response_reason_code' => $r->messageId()
-			,'response_reason_text' => df_ccc('-', $r->messageText(), $r->trnApproved() ? '' : (
-				$r->errorFields() ?: 'Transaction has been DECLINED.'
-			))
-			,'response_subcode' => (int)$r->trnApproved()
-			,'transaction_id' => $r->trnId()
-		];
+		return $r;
 	}
 
 	/**
@@ -200,21 +189,23 @@ final class Facade {
 	 */
 	static function p(M $m, $type, $a) {
 		$i = new self($m); /** @var self $i */
-		$r = $i->api($type, $a); /** @var array(string => mixed) $r */
+		$r = $i->api($type, $a); /** @var Response $r */
 		return new _DO([
 			'amount' => $a
-			,'approval_code' => $r['approval_code']
-			,'avs_result_code' => $r['avs_result_code']
-			,'card_code_response_code' => $r['card_code_response']
+			,'approval_code' => $r->authCode()
+			,'avs_result_code' => $r->avsResult()
+			,'card_code_response_code' => ''
 			,'customer_id' => $i->ba()->getCustomerId()
 			,'description' => ''
 			,'invoice_number' => $i->o()->getIncrementId()
 			,'method' => null
-			,'response_code' => (int)str_replace('"', '', $r['response_code'])
-			,'response_reason_code' => (int)str_replace('"', '', $r['response_reason_code'])
-			,'response_reason_text' => $r['response_reason_text']
-			,'response_subcode' => (int)str_replace('"', '', $r['response_subcode'])
-			,'transaction_id' => $r['transaction_id']
+			,'response_code' => (int)$r->trnApproved()
+			,'response_reason_code' => $r->messageId()
+			,'response_reason_text' => df_ccc('-', $r->messageText(), $r->trnApproved() ? '' : (
+				$r->errorFields() ?: 'Transaction has been DECLINED.'
+			))
+			,'response_subcode' => (int)$r->trnApproved()
+			,'transaction_id' => $r->trnId()
 			,'transaction_type' => $type
 		]);
 	}

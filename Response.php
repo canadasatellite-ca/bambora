@@ -40,7 +40,7 @@ final class Response extends \Df\Core\O {
 	 * «0-32 alphanumeric characters»
 	 * «If the transaction is approved this parameter contains a unique bank-issued code.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return string
 	 */
 	function authCode() {return df_prop($this);}
@@ -50,7 +50,7 @@ final class Response extends \Df\Core\O {
 	 * «1 digit»
 	 * «1 – if AVS was validated with both a match against address, and a match against postal/ZIP code»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return bool
 	 */
 	function avsResult() {return 1 === (int)df_prop($this);}
@@ -63,7 +63,7 @@ final class Response extends \Df\Core\O {
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * 2) «The `errorFields` variable will contain a list of fields that failed validation.»
 	 * https://mage2.pro/t/6280, Page 11.
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return string
 	 */
 	function errorFields() {return df_prop($this);}
@@ -78,7 +78,7 @@ final class Response extends \Df\Core\O {
 	 * by a response message “errorType=S” in the Beanstream response string.
 	 * If a system generated error occurs, validate your integration and website setup.»: https://mage2.pro/t/6280, Page 12.
 	 * @used-by valid()
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return string
 	 */
 	function errorType() {return df_prop($this);}
@@ -89,7 +89,7 @@ final class Response extends \Df\Core\O {
 	 * «References a detailed approved/declined transaction response message.
 	 * Review our gateway response message table for a full description of each message.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return int
 	 */
 	function messageId() {return (int)df_prop($this);}
@@ -99,7 +99,7 @@ final class Response extends \Df\Core\O {
 	 * «Returns a basic approved/declined message that can be displayed to the customer on a confirmation page.
 	 * Review our gateway response message table for details.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return string
 	 */
 	function messageText() {return df_prop($this);}
@@ -108,7 +108,7 @@ final class Response extends \Df\Core\O {
 	 * 2021-07-17
 	 * «0 – Transaction refused, 1 – Transaction approved»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return bool
 	 */
 	function trnApproved() {return !!df_prop($this);}
@@ -118,7 +118,7 @@ final class Response extends \Df\Core\O {
 	 * «8 digits»
 	 * «Unique id number identifying an individual transaction.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
-	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return bool
 	 */
 	function trnId() {return (int)df_prop($this);}
