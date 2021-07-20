@@ -201,22 +201,22 @@ final class Facade {
 	static function p(M $m, $type, $a) {
 		$i = new self($m); /** @var self $i */
 		$resA = $i->api($type, $a); /** @var array(string => mixed) $resA */
-		$r = new _DO; /** @var _DO $r */
-		$r->setResponseCode((int)str_replace('"', '', $resA['response_code']));
-		$r->setResponseSubcode((int)str_replace('"', '', $resA['response_subcode']));
-		$r->setResponseReasonCode((int)str_replace('"', '', $resA['response_reason_code']));
-		$r->setResponseReasonText($resA['response_reason_text']);
-		$r->setApprovalCode($resA['approval_code']);
-		$r->setAvsResultCode($resA['avs_result_code']);
-		$r->setTransactionId($resA['transaction_id']);
-		$r->setInvoiceNumber($i->o()->getIncrementId());
-		$r->setDescription('');
-		$r->setAmount($a);
-		$r->setMethod(null);
-		$r->setTransactionType($type);
-		$r->setCustomerId($i->ba()->getCustomerId());
-		$r->setCardCodeResponseCode($resA['card_code_response']);
-		return $r;
+		return new _DO([
+			'amount' => $a
+			,'approval_code' => $resA['approval_code']
+			,'avs_result_code' => $resA['avs_result_code']
+			,'card_code_response_code' => $resA['card_code_response']
+			,'customer_id' => $i->ba()->getCustomerId()
+			,'description' => ''
+			,'invoice_number' => $i->o()->getIncrementId()
+			,'method' => null
+			,'response_code' => (int)str_replace('"', '', $resA['response_code'])
+			,'response_reason_code' => (int)str_replace('"', '', $resA['response_reason_code'])
+			,'response_reason_text' => $resA['response_reason_text']
+			,'response_subcode' => (int)str_replace('"', '', $resA['response_subcode'])
+			,'transaction_id' => $resA['transaction_id']
+			,'transaction_type' => $type
+		]);
 	}
 
 	/**
