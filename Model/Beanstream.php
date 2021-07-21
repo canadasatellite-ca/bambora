@@ -94,7 +94,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 			$oq = $i->getOrder() ?: $i->getQuote();
 			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
 			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
-			df_error("Payment capturing error.\n{$res->reason()}");
+			df_error($res->reason());
 		}
 		$i->setStatus(self::STATUS_APPROVED);
 		$i->setCcTransId($res->trnId());
