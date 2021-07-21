@@ -1,7 +1,8 @@
 <?php
 namespace CanadaSatellite\Bambora;
 use CanadaSatellite\Bambora\Model\Beanstream as M;
-use Magento\Framework\DataObject as _DO;
+use Df\API\Operation;
+use Df\Core\O as CO;
 use Magento\Framework\Exception\LocalizedException as LE;
 use Magento\Payment\Model\Info as I;
 use Magento\Payment\Model\InfoInterface as II;
@@ -23,7 +24,7 @@ final class Facade {
 	 * @used-by p()
 	 * @param string $type
 	 * @param float|string $a
-	 * @return Response
+	 * @return Operation
 	 * @throws LE
 	 */
 	private function api($type, $a) {
@@ -58,7 +59,7 @@ final class Facade {
 		}
 		$o = $this->o(); /** @var O $o */
 		$nameFull = df_cc_s($ba->getFirstname(), $ba->getLastname()); /** @var string $nameFull */
-		$query = http_build_query([
+		$query = http_build_query($queryA = [
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# «Ensure that the Customer IP address is being passed in the API request for all transactions»:
 			# https://github.com/canadasatellite-ca/site/issues/175
@@ -105,7 +106,7 @@ final class Facade {
 			,'trnOrderNumber' => $o->getIncrementId()
 			,'trnType' => $trnType
 			,'username' => $this->cfg('merchant_username')
-		] + $query2); /** @var string $query */
+		] + $query2); /** @var string $query */ /** @var array(string => mixed) $queryA */
 		$curl = curl_init();
 		# 2021-07-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 		# 1) https://github.com/bambora-na/dev.na.bambora.com/blob/0486cc7e/source/docs/references/recurring_payment/index.md#request-parameters
@@ -139,7 +140,7 @@ final class Facade {
 		if (!$r->valid()) { /** @var string $errorType */
 			df_log_l(__CLASS__, ['request' => $query, 'response' => $resA], "error-{$r->errorType()}");
 		}
-		return $r;
+		return new Operation(new CO($queryA), $r);
 	}
 
 	/**
@@ -185,7 +186,7 @@ final class Facade {
 	 * @param M $m
 	 * @param string $type
 	 * @param float|string $a
-	 * @return Response
+	 * @return Operation
 	 */
 	static function p(M $m, $type, $a) {
 		$i = new self($m); /** @var self $i */

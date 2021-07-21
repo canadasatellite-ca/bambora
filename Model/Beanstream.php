@@ -3,6 +3,7 @@ namespace CanadaSatellite\Bambora\Model;
 use CanadaSatellite\Bambora\BankCardNetworkDetector;
 use CanadaSatellite\Bambora\Facade as F;
 use CanadaSatellite\Bambora\Response;
+use Df\API\Operation;
 use Magento\Framework\DataObject as _DO;
 use Magento\Framework\Exception\LocalizedException as LE;
 use Magento\Framework\ObjectManager\NoninterceptableInterface as INonInterceptable;
@@ -48,22 +49,23 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 * @throws LE
 	 */
 	function authorize(II $i, $a) {
-		$res = F::p($this, F::AUTH_ONLY, $a); /** @var Response $res */
+		$op = F::p($this, F::AUTH_ONLY, $a); /** @var Operation $op */
+		$res = $op->res(); /** @var Response $res */
 		$i->setCcApproval($res->authCode());
 		$i->setCcAvsStatus($res->avsResult());
 		$i->setCcCidStatus($res->avsResult());
 		$i->setCcTransId($res->trnId());
 		$i->setLastTransId($res->trnId());
-		$reasonS = $res->reason();
 		if (!$res->trnApproved()) {
-			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
-			df_error("Payment authorization error. \n$reasonS");
+			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
+			df_error($res->reason());
 		}
 		$i->setStatus(self::STATUS_APPROVED);
 		if ($res->trnId() != $i->getParentTransactionId()) {
 			$i->setTransactionId($res->trnId());
 		}
-		$i->setIsTransactionClosed(0)->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
+		$i->setIsTransactionClosed(0);
+		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 		return $this;
 	}
 
@@ -86,7 +88,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	 */
 	function capture(II $i, $a) {
 		$type = $i->getParentTransactionId() ? F::PRIOR_AUTH_CAPTURE : F::AUTH_CAPTURE; /** @var string $type */
-		$res = F::p($this, $type, $a); /** @var Response $res */
+		$op = F::p($this, $type, $a); /** @var Operation $op */
+		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
 			$oq = $i->getOrder() ?: $i->getQuote();
 			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
@@ -152,7 +155,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	function refund(II $i, $a) {
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$res = F::p($this, 'REFUND', $a); /** @var Response $res */
+		$op = F::p($this, 'REFUND', $a); /** @var Operation $op */
+		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
 			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
 			df_error($res->reason());
@@ -211,7 +215,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 	function void(II $i) {
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$res = F::p($this, F::VOID, 0.0); /** @var Response $res */
+		$op = F::p($this, F::VOID, 0.0); /** @var Operation $op */
+		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
 			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
 			df_error($res->reason());
@@ -225,26 +230,4 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 		return $this;
 	}
-
-	/**
-	 * 2021-06-29 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
-	 * "Refactor the `Schogini_Beanstream` module": https://github.com/canadasatellite-ca/bambora/issues/1
-	 * @used-by authorize()
-	 * @used-by capture()
-	 * @used-by refund()
-	 * @used-by void()
-	 * @param Phrase|string|null $m [optional]
-	 * @throws LE
-	 */
-	private static function err($m = null) {throw new LE(__($m ?: 'Payment error occurred.'));}
-
-	/**
-	 * 2021-07-01 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
-	 * "Refactor the `Schogini_Beanstream` module": https://github.com/canadasatellite-ca/bambora/issues/1
-	 * @used-by capture()
-	 * @used-by refund()
-	 * @used-by void()
-	 * @var int
-	 */
-	private static $APPROVED = 1;
 }
