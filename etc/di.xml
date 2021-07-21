@@ -8,7 +8,6 @@
 		type='CanadaSatellite\Bambora\Model\GuestPaymentManagement'
 	/>
 	<preference
-		for='Magento\Checkout\Model\PaymentInformationManagement'
-		type='CanadaSatellite\Bambora\Model\PaymentManagement'
+		for='Magento\Checkout\Model\PaymentInformationManagement' type='CanadaSatellite\Bambora\Model\PaymentManagement'
 	/>
 </config>

@@ -12,7 +12,7 @@ class PaymentManagement extends \Magento\Checkout\Model\PaymentInformationManage
 	 * @used-by \Magento\Webapi\Controller\Rest\SynchronousRequestProcessor::process()
 	 * @param int $cartId
 	 * @param IP $p
-	 * @param IA|null $a
+	 * @param IA|null $a [optional]
 	 * @return int
 	 * @throws CNSE
 	 */
