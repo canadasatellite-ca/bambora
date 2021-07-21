@@ -93,7 +93,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		if (!$res->trnApproved()) {
 			$oq = $i->getOrder() ?: $i->getQuote();
 			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
-			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
+			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
 			df_error("Payment capturing error.\n{$res->reason()}");
 		}
 		$i->setStatus(self::STATUS_APPROVED);
@@ -158,7 +158,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		$op = F::p($this, 'REFUND', $a); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
-			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
+			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
 			df_error($res->reason());
 		}
 		$i->setStatus(self::STATUS_SUCCESS);
@@ -218,7 +218,7 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		$op = F::p($this, F::VOID, 0.0); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
-			dfp_report($this, [/*'request' => $req->getData(), */'response' => $res->a()]);
+			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
 			df_error($res->reason());
 		}
 		$i->setStatus(self::STATUS_VOID);
