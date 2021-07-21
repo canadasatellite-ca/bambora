@@ -102,7 +102,8 @@ final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonI
 		if ($res->trnId() != $i->getParentTransactionId()) {
 			$i->setTransactionId($res->trnId());
 		}
-		$i->setIsTransactionClosed(0)->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
+		$i->setIsTransactionClosed(0);
+		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 		return $this;
 	}
 
