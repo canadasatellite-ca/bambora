@@ -16,6 +16,17 @@ use Magento\Sales\Model\Order\Payment as OP;
 abstract class Action {
 	/**
 	 * 2021-07-22
+	 * @used-by ii()
+	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\Refund::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\_Void::p()
+	 * @return M
+	 */
+	final function m() {return $this->_m;}
+
+	/**
+	 * 2021-07-22
 	 * @used-by o()
 	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
 	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
@@ -24,18 +35,6 @@ abstract class Action {
 	 * @return II|I|OP|QP
 	 */
 	final protected function ii() {return $this->m()->getInfoInstance();}
-
-	/**
-	 * 2021-07-22
-	 * @used-by ii()
-	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
-	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
-	 * @used-by \CanadaSatellite\Bambora\Action\Refund::p()
-	 * @used-by \CanadaSatellite\Bambora\Action\_Void::p()
-
-	 * @return M
-	 */
-	final protected function m() {return $this->_m;}
 
 	/**
 	 * 2021-07-22

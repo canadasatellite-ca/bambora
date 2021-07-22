@@ -23,7 +23,7 @@ final class Refund extends \CanadaSatellite\Bambora\Action {
 		$i = $this->ii(); /** @var II|I|OP $i */
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$op = F::p($this->m(), 'REFUND', $a); /** @var Operation $op */
+		$op = F::p($this, 'REFUND', $a); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
 			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);

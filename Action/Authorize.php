@@ -20,7 +20,7 @@ final class Authorize extends \CanadaSatellite\Bambora\Action {
 	 * @throws DFE
 	 */
 	function p($a) {
-		$op = F::p($this->m(), F::AUTH_ONLY, $a); /** @var Operation $op */
+		$op = F::p($this, F::AUTH_ONLY, $a); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		$i = $this->ii(); /** @var II|I|OP $i */
 		$i->setCcApproval($res->authCode());

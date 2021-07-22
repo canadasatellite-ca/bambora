@@ -15,9 +15,9 @@ final class Facade {
 	/**
 	 * 2021-07-14
 	 * @used-by p()
-	 * @param M $m
+	 * @param Action $a
 	 */
-	private function __construct(M $m) {$this->_m = $m;}
+	private function __construct(Action $a) {$this->_a = $a;}
 
 	/**
 	 * 2021-06-29
@@ -98,12 +98,36 @@ final class Facade {
 			,'trnCardNumber' => $i->getCcNumber()
 			,'trnCardOwner' => $nameFull
 			,'trnExpMonth' => sprintf('%02d', $i->getCcExpMonth())
-			# 2021-07-07 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
+			# 2021-07-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# The year should be represented by the last 2 digits:
 			# 1) https://github.com/bambora-na/dev.na.bambora.com/blob/0486cc7e/source/docs/references/recurring_payment/index.md#card-info
 			# 2) https://dev.na.bambora.com/docs/references/payment_APIs/v1-0-5
 			,'trnExpYear' => substr($i->getCcExpYear(), -2)
 			,'trnOrderNumber' => $o->getIncrementId()
+			# 2021-07-22 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
+			# 1.1) «Original value sent indicating the type of transaction to perform (P, R, PA, VP, VR, PAC, Q).»
+			# 1.2) «3 a/n characters»
+			# https://support.na.bambora.com/bic/w/docs/response-variables.htm
+			# 2.1) «`trnType` field must be included specifying the value PA for Pre-Authorization.»
+			# https://mage2.pro/t/6280, Page 34.
+			# 2.2) «Specify `trnType=PA` to process a pre-authorization against a customer's credit card.
+			# If omitted, this option will default to P for purchase.» https://mage2.pro/t/6280, Page 35.
+			# 2.3) «The request strings for these three types of transactions
+			# will vary only in the value passed in the `trnType` field (R=Return, VP=Void Purchase, VR=Void Return).»
+			# https://mage2.pro/t/6280, Page 35.
+			# 2.4) «A void is the removal of the entire amount,
+			# while a return will allow you do partial to full refunds of a transaction.
+			# The amount sent in needs to reflect this, otherwise it will be rejected from our system.»
+			# https://mage2.pro/t/6280, Page 35.
+			# 2.5)
+			# 	«*) R=Return
+			# 	*) VR=Void Return
+			#	*) V=Void
+			#	*) VP=Void Purchase
+			#	*) PAC=Pre-Authorization Completion
+			# If omitted, this field will default to P for purchase.
+			# Please note that "R" is the only valid adjustment for INTERAC Online.»
+			# https://mage2.pro/t/6280, Page 39.
 			,'trnType' => $trnType
 			,'username' => $this->cfg('merchant_username')
 		] + $query2); /** @var string $query */ /** @var array(string => mixed) $queryA */
@@ -157,7 +181,7 @@ final class Facade {
 	 * @param string $k
 	 * @return mixed
 	 */
-	private function cfg($k) {return $this->_m->getConfigData($k);}
+	private function cfg($k) {return $this->m()->getConfigData($k);}
 
 	/**
 	 * 2021-07-14
@@ -165,7 +189,15 @@ final class Facade {
 	 * @used-by o()
 	 * @return II|I|OP|QP
 	 */
-	private function ii() {return $this->_m->getInfoInstance();}
+	private function ii() {return $this->m()->getInfoInstance();}
+
+	/**
+	 * 2021-07-22
+	 * @used-by cfg()
+	 * @used-by ii()
+	 * @return M
+	 */
+	private function m() {return $this->_a->m();}
 
 	/**
 	 * 2021-07-16
@@ -179,11 +211,10 @@ final class Facade {
 	/**
 	 * 2021-07-14
 	 * @used-by __construct()
-	 * @used-by cfg()
-	 * @used-by ii()
-	 * @var M
+	 * @used-by m()
+	 * @var Action
 	 */
-	private $_m;
+	private $_a;
 
 	/**
 	 * 2021-07-17
@@ -191,15 +222,14 @@ final class Facade {
 	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
 	 * @used-by \CanadaSatellite\Bambora\Action\Refund::p()
 	 * @used-by \CanadaSatellite\Bambora\Action\_Void::p()
-
-	 * @param M $m
+	 * @param Action $a
 	 * @param string $type
-	 * @param float|string $a
+	 * @param float|string $amt
 	 * @return Operation
 	 */
-	static function p(M $m, $type, $a) {
-		$i = new self($m); /** @var self $i */
-		return $i->api($type, $a);
+	static function p(Action $a, $type, $amt) {
+		$i = new self($a); /** @var self $i */
+		return $i->api($type, $amt);
 	}
 
 	/**

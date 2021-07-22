@@ -22,7 +22,7 @@ final class Capture extends \CanadaSatellite\Bambora\Action {
 	function p($a) {
 		$i = $this->ii(); /** @var II|I|OP $i */
 		$type = $i->getParentTransactionId() ? F::PRIOR_AUTH_CAPTURE : F::AUTH_CAPTURE; /** @var string $type */
-		$op = F::p($this->m(), $type, $a); /** @var Operation $op */
+		$op = F::p($this, $type, $a); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
 			$oq = $i->getOrder() ?: $i->getQuote();
