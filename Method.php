@@ -1,5 +1,9 @@
 <?php
 namespace CanadaSatellite\Bambora;
+use CanadaSatellite\Bambora\Action\Authorize;
+use CanadaSatellite\Bambora\Action\Capture;
+use CanadaSatellite\Bambora\Action\Refund;
+use CanadaSatellite\Bambora\Action\_Void;
 use CanadaSatellite\Bambora\Facade as F;
 use Df\API\Operation;
 use Magento\Framework\DataObject as _DO;
@@ -46,23 +50,7 @@ final class Method extends \Magento\Payment\Model\Method\Cc implements INonInter
 	 * @throws LE
 	 */
 	function authorize(II $i, $a) {
-		$op = F::p($this, F::AUTH_ONLY, $a); /** @var Operation $op */
-		$res = $op->res(); /** @var Response $res */
-		$i->setCcApproval($res->authCode());
-		$i->setCcAvsStatus($res->avsResult());
-		$i->setCcCidStatus($res->avsResult());
-		$i->setCcTransId($res->trnId());
-		$i->setLastTransId($res->trnId());
-		if (!$res->trnApproved()) {
-			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
-			df_error($res->reason());
-		}
-		$i->setStatus(self::STATUS_APPROVED);
-		if ($res->trnId() != $i->getParentTransactionId()) {
-			$i->setTransactionId($res->trnId());
-		}
-		$i->setIsTransactionClosed(0);
-		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
+		Authorize::s($this)->p($a);
 		return $this;
 	}
 
@@ -84,23 +72,7 @@ final class Method extends \Magento\Payment\Model\Method\Cc implements INonInter
 	 * @throws LE
 	 */
 	function capture(II $i, $a) {
-		$type = $i->getParentTransactionId() ? F::PRIOR_AUTH_CAPTURE : F::AUTH_CAPTURE; /** @var string $type */
-		$op = F::p($this, $type, $a); /** @var Operation $op */
-		$res = $op->res(); /** @var Response $res */
-		if (!$res->trnApproved()) {
-			$oq = $i->getOrder() ?: $i->getQuote();
-			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
-			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
-			df_error($res->reason());
-		}
-		$i->setStatus(self::STATUS_APPROVED);
-		$i->setCcTransId($res->trnId());
-		$i->setLastTransId($res->trnId());
-		if ($res->trnId() != $i->getParentTransactionId()) {
-			$i->setTransactionId($res->trnId());
-		}
-		$i->setIsTransactionClosed(0);
-		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
+		Capture::s($this)->p($a);
 		return $this;
 	}
 
@@ -151,21 +123,7 @@ final class Method extends \Magento\Payment\Model\Method\Cc implements INonInter
 	 * @return $this
 	 */
 	function refund(II $i, $a) {
-		# 2021-07-06 A string like «10000003».
-		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$op = F::p($this, 'REFUND', $a); /** @var Operation $op */
-		$res = $op->res(); /** @var Response $res */
-		if (!$res->trnApproved()) {
-			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
-			df_error($res->reason());
-		}
-		$i->setStatus(self::STATUS_SUCCESS);
-		if ($res->trnId() != $parentId) {
-			$i->setTransactionId($res->trnId());
-		}
-		$i->setIsTransactionClosed(1);
-		$i->setShouldCloseParentTransaction($i->getOrder()->canCreditmemo() ? 0 : 1);
-		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
+		Refund::s($this)->p($a);
 		return $this;
 	}
 	
@@ -211,21 +169,7 @@ final class Method extends \Magento\Payment\Model\Method\Cc implements INonInter
 	 * @uses _void()
 	 */
 	function void(II $i) {
-		# 2021-07-06 A string like «10000003».
-		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$op = F::p($this, F::VOID, 0.0); /** @var Operation $op */
-		$res = $op->res(); /** @var Response $res */
-		if (!$res->trnApproved()) {
-			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
-			df_error($res->reason());
-		}
-		$i->setStatus(self::STATUS_VOID);
-		if ($res->trnId() != $parentId) {
-			$i->setTransactionId($res->trnId());
-		}
-		$i->setIsTransactionClosed(1);
-		$i->setShouldCloseParentTransaction(1);
-		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
+		_Void::s($this)->p();
 		return $this;
 	}
 }

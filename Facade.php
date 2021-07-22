@@ -163,7 +163,6 @@ final class Facade {
 	 * 2021-07-14
 	 * @used-by api()
 	 * @used-by o()
-	 * @param string|null $k [optional]
 	 * @return II|I|OP|QP
 	 */
 	private function ii() {return $this->_m->getInfoInstance();}
@@ -178,11 +177,21 @@ final class Facade {
 	private function o() {return $this->ii()->getOrder();}
 
 	/**
+	 * 2021-07-14
+	 * @used-by __construct()
+	 * @used-by cfg()
+	 * @used-by ii()
+	 * @var M
+	 */
+	private $_m;
+
+	/**
 	 * 2021-07-17
-	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Method::capture()
-	 * @used-by \CanadaSatellite\Bambora\Method::refund()
-	 * @used-by \CanadaSatellite\Bambora\Method::void()
+	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\Refund::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\_Void::p()
+
 	 * @param M $m
 	 * @param string $type
 	 * @param float|string $a
@@ -192,15 +201,6 @@ final class Facade {
 		$i = new self($m); /** @var self $i */
 		return $i->api($type, $a);
 	}
-
-	/**
-	 * 2021-07-14
-	 * @used-by __construct()
-	 * @used-by cfg()
-	 * @used-by ii()
-	 * @var M
-	 */
-	private $_m;
 
 	/**
 	 * 2021-07-06
