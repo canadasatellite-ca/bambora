@@ -1,6 +1,6 @@
 <?php
 namespace CanadaSatellite\Bambora;
-use CanadaSatellite\Bambora\Model\Beanstream as M;
+use CanadaSatellite\Bambora\Method as M;
 use Df\API\Operation;
 use Df\Core\O as CO;
 use Magento\Framework\Exception\LocalizedException as LE;
@@ -179,10 +179,10 @@ final class Facade {
 
 	/**
 	 * 2021-07-17
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
+	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Method::capture()
+	 * @used-by \CanadaSatellite\Bambora\Method::refund()
+	 * @used-by \CanadaSatellite\Bambora\Method::void()
 	 * @param M $m
 	 * @param string $type
 	 * @param float|string $a
@@ -205,7 +205,7 @@ final class Facade {
 	/**
 	 * 2021-07-06
 	 * @used-by api()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
+	 * @used-by \CanadaSatellite\Bambora\Method::capture()
 	 * @var string
 	 */
 	const AUTH_CAPTURE = 'AUTH_CAPTURE';
@@ -213,7 +213,7 @@ final class Facade {
 	/**
 	 * 2021-07-06
 	 * @used-by api()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
 	 * @var string
 	 */
 	const AUTH_ONLY = 'AUTH_ONLY';
@@ -221,7 +221,7 @@ final class Facade {
 	/**
 	 * 2021-07-01
 	 * @used-by api()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
+	 * @used-by \CanadaSatellite\Bambora\Method::capture()
 	 * @var string
 	 */
 	const PRIOR_AUTH_CAPTURE = 'PRIOR_AUTH_CAPTURE';
@@ -229,7 +229,7 @@ final class Facade {
 	/**
 	 * 2021-07-01
 	 * @used-by api()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
+	 * @used-by \CanadaSatellite\Bambora\Method::void()
 	 * @var string
 	 */
 	const VOID = 'VOID';

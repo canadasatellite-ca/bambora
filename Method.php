@@ -1,13 +1,10 @@
 <?php
-namespace CanadaSatellite\Bambora\Model;
-use CanadaSatellite\Bambora\BankCardNetworkDetector;
+namespace CanadaSatellite\Bambora;
 use CanadaSatellite\Bambora\Facade as F;
-use CanadaSatellite\Bambora\Response;
 use Df\API\Operation;
 use Magento\Framework\DataObject as _DO;
 use Magento\Framework\Exception\LocalizedException as LE;
 use Magento\Framework\ObjectManager\NoninterceptableInterface as INonInterceptable;
-use Magento\Framework\Phrase;
 use Magento\Payment\Model\Info as I;
 use Magento\Payment\Model\InfoInterface as II;
 use Magento\Quote\Api\Data\CartInterface as ICart;
@@ -16,7 +13,7 @@ use Magento\Quote\Model\Quote\Payment as QP;
 use Magento\Sales\Model\Order\Payment as OP;
 # 2021-06-27 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 # "Refactor the `Schogini_Beanstream` module": https://github.com/canadasatellite-ca/bambora/issues/1
-final class Beanstream extends \Magento\Payment\Model\Method\Cc implements INonInterceptable {
+final class Method extends \Magento\Payment\Model\Method\Cc implements INonInterceptable {
 	const CODE = 'beanstream';
 	protected $_code = self::CODE;
 	protected $_isGateway = true;

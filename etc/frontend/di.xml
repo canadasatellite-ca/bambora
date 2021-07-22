@@ -3,7 +3,7 @@
 	<virtualType name='CanadaSatellite\Bambora\Model\ConfigProvider' type='Magento\Payment\Model\CcGenericConfigProvider'>
 		<arguments>
 			<argument name='methodCodes' xsi:type='array'>
-				<item name='schogini_beanstream' xsi:type='const'>CanadaSatellite\Bambora\Model\Beanstream::CODE</item>
+				<item name='schogini_beanstream' xsi:type='const'>CanadaSatellite\Bambora\Method::CODE</item>
 			</argument>
 		</arguments>
 	</virtualType>

@@ -4,7 +4,7 @@ namespace CanadaSatellite\Bambora;
 final class BankCardNetworkDetector {
 	/**
 	 * 2021-06-27
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::validate()
+	 * @used-by \CanadaSatellite\Bambora\Method::validate()
 	 * @see \Df\Payment\BankCardNetworkDetector::p()
 	 * @param string $n
 	 * @return string

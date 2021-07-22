@@ -41,7 +41,7 @@ final class Response extends \Df\Core\O {
 	 * «If the transaction is approved this parameter contains a unique bank-issued code.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
 	 * @return string
 	 */
 	function authCode() {return df_prop($this);}
@@ -52,7 +52,7 @@ final class Response extends \Df\Core\O {
 	 * «1 – if AVS was validated with both a match against address, and a match against postal/ZIP code»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
 	 * @return bool
 	 */
 	function avsResult() {return 1 === (int)df_prop($this);}
@@ -110,10 +110,10 @@ final class Response extends \Df\Core\O {
 
 	/**
 	 * 2021-07-20
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
+	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Method::capture()
+	 * @used-by \CanadaSatellite\Bambora\Method::refund()
+	 * @used-by \CanadaSatellite\Bambora\Method::void()
 	 * @return string
 	 */
 	function reason() {return df_ccc('-', $this->messageText(), $this->trnApproved() ? '' : (
@@ -126,10 +126,10 @@ final class Response extends \Df\Core\O {
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by reason()
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
+	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Method::capture()
+	 * @used-by \CanadaSatellite\Bambora\Method::refund()
+	 * @used-by \CanadaSatellite\Bambora\Method::void()
 	 * @return bool
 	 */
 	function trnApproved() {return !!df_prop($this);}
@@ -140,10 +140,10 @@ final class Response extends \Df\Core\O {
 	 * «Unique id number identifying an individual transaction.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::capture()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::refund()
-	 * @used-by \CanadaSatellite\Bambora\Model\Beanstream::void()
+	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
+	 * @used-by \CanadaSatellite\Bambora\Method::capture()
+	 * @used-by \CanadaSatellite\Bambora\Method::refund()
+	 * @used-by \CanadaSatellite\Bambora\Method::void()
 	 * @return bool
 	 */
 	function trnId() {return (int)df_prop($this);}

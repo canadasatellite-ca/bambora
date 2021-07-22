@@ -4,7 +4,7 @@
 		<payment>
 			<beanstream>
 				<active>0</active>
-				<model>\CanadaSatellite\Bambora\Model\Beanstream</model>
+				<model>\CanadaSatellite\Bambora\Method</model>
 				<order_status>processing</order_status>
 				<title>Credit Card (Beanstream)</title>
 				<allowspecific>0</allowspecific>
