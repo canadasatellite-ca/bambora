@@ -5,6 +5,6 @@ namespace CanadaSatellite\Bambora;
  * @see \CanadaSatellite\Bambora\Action\Authorize
  * @see \CanadaSatellite\Bambora\Action\Capture
  * @see \CanadaSatellite\Bambora\Action\Refund
- * @see \CanadaSatellite\Bambora\Action\Void
+ * @see \CanadaSatellite\Bambora\Action\_Void
  */
 abstract class Action {}
