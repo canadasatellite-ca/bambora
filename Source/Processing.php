@@ -1,5 +1,5 @@
 <?php
-namespace CanadaSatellite\Bambora\Model\Source;
+namespace CanadaSatellite\Bambora\Source;
 use Magento\Sales\Model\Order as O;
 # 2021-07-21 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 # "Refactor the `Schogini_Beanstream` module": https://github.com/canadasatellite-ca/bambora/issues/1

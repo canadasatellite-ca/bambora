@@ -93,7 +93,7 @@
 					type='select'
 				>
 					<label>Payment Action</label>
-					<source_model>CanadaSatellite\Bambora\Model\Source\Paymentaction</source_model>
+					<source_model>CanadaSatellite\Bambora\Source\Paymentaction</source_model>
 				</field>
 				<field
 					id='order_status'
@@ -105,7 +105,7 @@
 					type='select'
 				>
 					<label>New order status</label>
-					<source_model>CanadaSatellite\Bambora\Model\Source\Processing</source_model>
+					<source_model>CanadaSatellite\Bambora\Source\Processing</source_model>
 				</field>
 				<field
 					id='cctypes'
@@ -117,7 +117,7 @@
 					type='multiselect'
 				>
 					<label>Credit Card Types</label>
-					<source_model>CanadaSatellite\Bambora\Model\Source\Cctype</source_model>
+					<source_model>CanadaSatellite\Bambora\Source\Cctype</source_model>
 				</field>
 				<field
 					id='useccv'
