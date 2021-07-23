@@ -50,12 +50,11 @@ final class Facade {
 		}
 		elseif ($type == self::PRIOR_AUTH_CAPTURE) {
 			$trnType = 'PAC';
-			$query2 = ['adjId' => $i->getCcTransId()];
+			$query2 = ['adjId' => ParentId::get($i)];
 		}
 		elseif ($type == self::VOID) {
 			$trnType = 'PAC';
-			$spd28804 = explode('--', $i->getCcTransId());
-			$query2 = ['adjId' => $spd28804[0]];
+			$query2 = ['adjId' => ParentId::get($i)];
 		}
 		$o = $this->o(); /** @var O $o */
 		$nameFull = df_cc_s($ba->getFirstname(), $ba->getLastname()); /** @var string $nameFull */

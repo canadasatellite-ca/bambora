@@ -2,6 +2,7 @@
 namespace CanadaSatellite\Bambora\Action;
 use CanadaSatellite\Bambora\Facade as F;
 use CanadaSatellite\Bambora\Method as M;
+use CanadaSatellite\Bambora\ParentId;
 use CanadaSatellite\Bambora\Response;
 use Df\API\Operation;
 use Df\Core\Exception as DFE;
@@ -26,7 +27,7 @@ final class Authorize extends \CanadaSatellite\Bambora\Action {
 		$i->setCcApproval($res->authCode());
 		$i->setCcAvsStatus($res->avsResult());
 		$i->setCcCidStatus($res->avsResult());
-		$i->setCcTransId($res->trnId());
+		ParentId::set($i, $res->trnId());
 		$i->setLastTransId($res->trnId());
 		if (!$res->trnApproved()) {
 			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);

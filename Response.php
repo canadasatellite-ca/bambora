@@ -144,7 +144,7 @@ final class Response extends \Df\Core\O {
 	 * @used-by \CanadaSatellite\Bambora\Method::capture()
 	 * @used-by \CanadaSatellite\Bambora\Method::refund()
 	 * @used-by \CanadaSatellite\Bambora\Method::void()
-	 * @return bool
+	 * @return int
 	 */
 	function trnId() {return (int)df_prop($this);}
 

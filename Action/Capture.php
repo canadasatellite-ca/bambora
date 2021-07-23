@@ -2,6 +2,7 @@
 namespace CanadaSatellite\Bambora\Action;
 use CanadaSatellite\Bambora\Facade as F;
 use CanadaSatellite\Bambora\Method as M;
+use CanadaSatellite\Bambora\ParentId;
 use CanadaSatellite\Bambora\Response;
 use Df\API\Operation;
 use Df\Core\Exception as DFE;
@@ -31,7 +32,7 @@ final class Capture extends \CanadaSatellite\Bambora\Action {
 			df_error($res->reason());
 		}
 		$i->setStatus(M::STATUS_APPROVED);
-		$i->setCcTransId($res->trnId());
+		ParentId::set($i, $res->trnId());
 		$i->setLastTransId($res->trnId());
 		if ($res->trnId() != $i->getParentTransactionId()) {
 			$i->setTransactionId($res->trnId());
