@@ -16,6 +16,17 @@ use Magento\Sales\Model\Order\Payment as OP;
 abstract class Action {
 	/**
 	 * 2021-07-22
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @see \CanadaSatellite\Bambora\Action\Authorize::trnType()
+	 * @see \CanadaSatellite\Bambora\Action\Capture::trnType()
+	 * @see \CanadaSatellite\Bambora\Action\Refund::trnType()
+	 * @see \CanadaSatellite\Bambora\Action\_Void::trnType()
+	 * @return string
+	 */
+	abstract protected function trnType();
+
+	/**
+	 * 2021-07-22
 	 * @used-by ii()
 	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
 	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()

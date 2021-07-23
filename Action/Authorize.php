@@ -39,4 +39,15 @@ final class Authorize extends \CanadaSatellite\Bambora\Action {
 		$i->setIsTransactionClosed(0);
 		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 	}
+
+	/**
+	 * 2021-07-23
+	 * «`trnType` field must be included specifying the value PA for Pre-Authorization.»
+	 * https://mage2.pro/t/6280, Page 34.
+	 * @override
+	 * @see \CanadaSatellite\Bambora\Action::trnType()
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return string
+	 */
+	protected function trnType() {return 'PA';}
 }

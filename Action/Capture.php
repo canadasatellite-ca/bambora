@@ -39,4 +39,16 @@ final class Capture extends \CanadaSatellite\Bambora\Action {
 		$i->setIsTransactionClosed(0);
 		$i->setTransactionAdditionalInfo('real_transaction_id', $res->trnId());
 	}
+
+	/**
+	 * 2021-07-23
+	 * 1) «Specify `trnType=PA` to process a pre-authorization against a customer's credit card.
+	 * If omitted, this option will default to P for purchase.» https://mage2.pro/t/6280, Page 35.
+	 * 2) «A Pre-Authorization Completion (`PAC`) is the second part of a pre-authorization.» https://mage2.pro/t/6283, Page 45.
+	 * @override
+	 * @see \CanadaSatellite\Bambora\Action::trnType()
+	 * @used-by \CanadaSatellite\Bambora\Facade::api()
+	 * @return string
+	 */
+	protected function trnType() {return $this->ii()->getParentTransactionId() ? 'PAC' : 'P';}
 }
