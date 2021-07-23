@@ -67,5 +67,5 @@ final class _Void extends \CanadaSatellite\Bambora\Action {
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return string
 	 */
-	protected function trnType() {return 'V';}
+	function trnType() {return 'V';}
 }

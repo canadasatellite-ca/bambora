@@ -51,5 +51,5 @@ final class Capture extends \CanadaSatellite\Bambora\Action {
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return string
 	 */
-	protected function trnType() {return $this->ii()->getParentTransactionId() ? 'PAC' : 'P';}
+	function trnType() {return $this->ii()->getParentTransactionId() ? 'PAC' : 'P';}
 }

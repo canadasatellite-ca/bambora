@@ -50,5 +50,5 @@ final class Authorize extends \CanadaSatellite\Bambora\Action {
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return string
 	 */
-	protected function trnType() {return 'PA';}
+	function trnType() {return 'PA';}
 }

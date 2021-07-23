@@ -23,7 +23,7 @@ abstract class Action {
 	 * @see \CanadaSatellite\Bambora\Action\_Void::trnType()
 	 * @return string
 	 */
-	abstract protected function trnType();
+	abstract function trnType();
 
 	/**
 	 * 2021-07-22

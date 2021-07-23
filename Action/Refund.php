@@ -68,5 +68,5 @@ final class Refund extends \CanadaSatellite\Bambora\Action {
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return string
 	 */
-	protected function trnType() {return 'R';}
+	function trnType() {return 'R';}
 }

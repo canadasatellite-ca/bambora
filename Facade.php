@@ -39,21 +39,12 @@ final class Facade {
 		if (!in_array($country, ['CA', 'US'])) {
 			$state = '--';
 		}
-		$trnType = 'P';
 		$query2 = []; /** @var array(string => string) $query2 */
 		$i = $this->ii(); /** @var II|OP $i */
-		if ($type == self::AUTH_CAPTURE) {
-			$trnType = 'P';
-		}
-		elseif ($type == self::AUTH_ONLY) {
-			$trnType = 'PA';
-		}
-		elseif ($type == self::PRIOR_AUTH_CAPTURE) {
-			$trnType = 'PAC';
+		if ($type == self::PRIOR_AUTH_CAPTURE) {
 			$query2 = ['adjId' => ParentId::get($i)];
 		}
 		elseif ($type == self::VOID) {
-			$trnType = 'PAC';
 			$query2 = ['adjId' => ParentId::get($i)];
 		}
 		$o = $this->o(); /** @var O $o */
@@ -127,7 +118,7 @@ final class Facade {
 			# If omitted, this field will default to P for purchase.
 			# Please note that "R" is the only valid adjustment for INTERAC Online.»
 			# https://mage2.pro/t/6280, Page 39.
-			,'trnType' => $trnType
+			,'trnType' => $this->_a->trnType()
 			,'username' => $this->cfg('merchant_username')
 		] + $query2); /** @var string $query */ /** @var array(string => mixed) $queryA */
 		$curl = curl_init();
