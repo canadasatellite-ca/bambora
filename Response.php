@@ -116,9 +116,7 @@ final class Response extends \Df\Core\O {
 	 * @used-by \CanadaSatellite\Bambora\Method::void()
 	 * @return string
 	 */
-	function reason() {return df_ccc('-', $this->messageText(), $this->trnApproved() ? '' : (
-		$this->errorFields() ?: 'Transaction has been DECLINED.'
-	));}
+	function reason() {return $this->trnApproved() ? '' : "The transaction has been declined: «{$this->messageText()}».";}
 
 	/**
 	 * 2021-07-17

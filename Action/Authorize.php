@@ -30,7 +30,7 @@ final class Authorize extends \CanadaSatellite\Bambora\Action {
 		ParentId::set($i, $res->trnId());
 		$i->setLastTransId($res->trnId());
 		if (!$res->trnApproved()) {
-			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
+			dfp_report($i, ['request' => $op->req(), 'response' => $res->a()]);
 			df_error($res->reason());
 		}
 		$i->setStatus(M::STATUS_APPROVED);

@@ -26,7 +26,7 @@ final class Refund extends \CanadaSatellite\Bambora\Action {
 		$op = F::p($this, 'REFUND', $a); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
-			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
+			dfp_report($i, ['request' => $op->req(), 'response' => $res->a()]);
 			df_error($res->reason());
 		}
 		$i->setStatus(M::STATUS_SUCCESS);

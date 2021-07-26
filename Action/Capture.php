@@ -28,7 +28,7 @@ final class Capture extends \CanadaSatellite\Bambora\Action {
 		if (!$res->trnApproved()) {
 			$oq = $i->getOrder() ?: $i->getQuote();
 			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
-			dfp_report($this, ['request' => $op->req(), 'response' => $res->a()]);
+			dfp_report($i, ['request' => $op->req(), 'response' => $res->a()]);
 			df_error($res->reason());
 		}
 		$i->setStatus(M::STATUS_APPROVED);
