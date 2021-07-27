@@ -70,7 +70,7 @@ final class Facade {
 			,'ordProvince' => $state
 			,'password' => $this->cfg('merchant_password')
 			,'requestType' => 'BACKEND'
-			,'trnAmount' => $a
+			,'trnAmount' => dff_2($a)
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# 1) «Include the 3 or 4-digit CVD number from the back of the customer's credit card.
 			# CVD numbers are not stored in the Bambora system
