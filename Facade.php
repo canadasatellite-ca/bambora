@@ -39,16 +39,10 @@ final class Facade {
 		if (!in_array($country, ['CA', 'US'])) {
 			$state = '--';
 		}
-		$query2 = []; /** @var array(string => string) $query2 */
 		$i = $this->ii(); /** @var II|OP $i */
-		if ($type == self::PRIOR_AUTH_CAPTURE) {
-			$query2 = ['adjId' => ParentId::get($i)];
-		}
-		elseif ($type == self::VOID) {
-			$query2 = ['adjId' => ParentId::get($i)];
-		}
 		$o = $this->o(); /** @var O $o */
 		$nameFull = df_cc_s($ba->getFirstname(), $ba->getLastname()); /** @var string $nameFull */
+		/** @var string $query */ /** @var array(string => mixed) $queryA */
 		$query = http_build_query($queryA = [
 			# 2021-06-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 			# «Ensure that the Customer IP address is being passed in the API request for all transactions»:
@@ -120,7 +114,7 @@ final class Facade {
 			# https://mage2.pro/t/6280, Page 39.
 			,'trnType' => $this->_a->trnType()
 			,'username' => $this->cfg('merchant_username')
-		] + $query2); /** @var string $query */ /** @var array(string => mixed) $queryA */
+		] + (!in_array($type, [self::VOID, self::PRIOR_AUTH_CAPTURE]) ? [] : ['adjId' => ParentId::get($i)]));
 		$curl = curl_init();
 		# 2021-07-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
 		# 1) https://github.com/bambora-na/dev.na.bambora.com/blob/0486cc7e/source/docs/references/recurring_payment/index.md#request-parameters
