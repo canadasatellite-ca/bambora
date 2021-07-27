@@ -22,7 +22,7 @@ final class _Void extends \CanadaSatellite\Bambora\Action {
 		$i = $this->ii(); /** @var II|I|OP $i */
 		# 2021-07-06 A string like «10000003».
 		df_assert_sne($parentId = $i->getParentTransactionId()); /** @var string $parentId */
-		$op = F::p($this, F::VOID, 0.0); /** @var Operation $op */
+		$op = F::p($this, F::VOID, $i->getAmountAuthorized()); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		if (!$res->trnApproved()) {
 			dfp_report($i, ['request' => $op->req(), 'response' => $res->a()]);
@@ -67,5 +67,5 @@ final class _Void extends \CanadaSatellite\Bambora\Action {
 	 * @used-by \CanadaSatellite\Bambora\Facade::api()
 	 * @return string
 	 */
-	function trnType() {return 'V';}
+	function trnType() {return 'VP';}
 }
