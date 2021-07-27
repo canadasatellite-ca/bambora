@@ -114,6 +114,12 @@ final class Facade {
 			# https://mage2.pro/t/6280, Page 39.
 			,'trnType' => $this->_a->trnType()
 			,'username' => $this->cfg('merchant_username')
+		# 2021-07-27
+		# «A Pre-Authorization Completion (PAC) is the second part of a pre-authorization.
+		# A PAC has a shorter transaction string than the original authorization
+		# as no card or billing information is required.
+		# The request must include an `adjId` variable that identifies the original PA transaction number.»
+		# https://mage2.pro/t/6283, page 45.
 		] + (!in_array($type, [self::VOID, self::PRIOR_AUTH_CAPTURE]) ? [] : ['adjId' => ParentId::get($i)]));
 		$curl = curl_init();
 		# 2021-07-11 Dmitry Fedyuk https://www.upwork.com/fl/mage2pro
