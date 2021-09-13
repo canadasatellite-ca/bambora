@@ -110,10 +110,7 @@ final class Response extends \Df\Core\O {
 
 	/**
 	 * 2021-07-20
-	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Method::capture()
-	 * @used-by \CanadaSatellite\Bambora\Method::refund()
-	 * @used-by \CanadaSatellite\Bambora\Method::void()
+	 * @used-by \CanadaSatellite\Bambora\Action::check()
 	 * @return string
 	 */
 	function reason() {return $this->trnApproved() ? '' : "The transaction has been declined: «{$this->messageText()}».";}
@@ -123,11 +120,7 @@ final class Response extends \Df\Core\O {
 	 * «0 – Transaction refused, 1 – Transaction approved»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by reason()
-	 * @used-by \CanadaSatellite\Bambora\Facade::p()
-	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
-	 * @used-by \CanadaSatellite\Bambora\Method::capture()
-	 * @used-by \CanadaSatellite\Bambora\Method::refund()
-	 * @used-by \CanadaSatellite\Bambora\Method::void()
+	 * @used-by \CanadaSatellite\Bambora\Action::check()
 	 * @return bool
 	 */
 	function trnApproved() {return !!df_prop($this);}

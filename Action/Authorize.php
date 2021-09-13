@@ -21,7 +21,7 @@ final class Authorize extends \CanadaSatellite\Bambora\Action {
 	 * @throws DFE
 	 */
 	function p($a) {
-		$op = F::p($this, F::AUTH_ONLY, $a); /** @var Operation $op */
+		$op = $this->check(F::p($this, F::AUTH_ONLY, $a)); /** @var Operation $op */
 		$res = $op->res(); /** @var Response $res */
 		$i = $this->ii(); /** @var II|I|OP $i */
 		$i->setCcApproval($res->authCode());
@@ -29,10 +29,6 @@ final class Authorize extends \CanadaSatellite\Bambora\Action {
 		$i->setCcCidStatus($res->avsResult());
 		ParentId::set($i, $res->trnId());
 		$i->setLastTransId($res->trnId());
-		if (!$res->trnApproved()) {
-			dfp_report($i, ['request' => $op->req(), 'response' => $res->a()]);
-			df_error($res->reason());
-		}
 		$i->setStatus(M::STATUS_APPROVED);
 		if ($res->trnId() != $i->getParentTransactionId()) {
 			$i->setTransactionId($res->trnId());

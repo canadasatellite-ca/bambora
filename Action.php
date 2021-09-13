@@ -1,6 +1,7 @@
 <?php
 namespace CanadaSatellite\Bambora;
 use CanadaSatellite\Bambora\Method as M;
+use Df\API\Operation;
 use Magento\Payment\Model\Info as I;
 use Magento\Payment\Model\InfoInterface as II;
 use Magento\Quote\Model\Quote\Payment as QP;
@@ -27,17 +28,37 @@ abstract class Action {
 
 	/**
 	 * 2021-07-22
+	 * @used-by check()
 	 * @used-by ii()
-	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
-	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
-	 * @used-by \CanadaSatellite\Bambora\Action\Refund::p()
-	 * @used-by \CanadaSatellite\Bambora\Action\_Void::p()
+	 * @used-by \CanadaSatellite\Bambora\Facade::m()
 	 * @return M
 	 */
 	final function m() {return $this->_m;}
 
 	/**
+	 * 2021-09-13
+	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\Refund::p()
+	 * @used-by \CanadaSatellite\Bambora\Action\_Void::p()
+	 * @param Operation $op
+	 * @return Operation
+	 */
+	final protected function check(Operation $op) {
+		$res = $op->res(); /** @var Response $res */
+		if (!$res->trnApproved()) {
+			$i = $this->ii(); /** @var II|I|OP $i */
+			$oq = $i->getOrder() ?: $i->getQuote();
+			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
+			dfp_report($this->m(), ['request' => $op->req(), 'response' => $res->a()]);
+			df_error($res->reason());
+		}
+		return $op;
+	}
+
+	/**
 	 * 2021-07-22
+	 * @used-by check()
 	 * @used-by o()
 	 * @used-by \CanadaSatellite\Bambora\Action\Authorize::p()
 	 * @used-by \CanadaSatellite\Bambora\Action\Capture::p()
