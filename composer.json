@@ -1,6 +1,6 @@
 {
 	"name": "canadasatellite/bambora"
-	,"version": "0.0.2"
+	,"version": "0.0.3"
 	,"description": "The Bambora North America (Beamstream) payment module for canadasatellite.ca (Magento 2)"
 	,"type": "magento2-module"
 	,"homepage": "https://github.com/canadasatellite-ca/bambora"
