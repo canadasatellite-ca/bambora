@@ -103,10 +103,11 @@ final class Response extends \Df\Core\O {
 	 * Review our gateway response message table for details.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
 	 * @used-by reason()
+	 * @used-by \CanadaSatellite\Bambora\Action::check()
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @return string
 	 */
-	function messageText() {return df_prop($this);}
+	function messageText() {return strtolower(df_prop($this));}
 
 	/**
 	 * 2021-07-20
@@ -130,6 +131,7 @@ final class Response extends \Df\Core\O {
 	 * «8 digits»
 	 * «Unique id number identifying an individual transaction.»
 	 * https://support.na.bambora.com/bic/w/docs/response-variables.htm
+	 * @used-by \CanadaSatellite\Bambora\Action::check()
 	 * @used-by \CanadaSatellite\Bambora\Facade::p()
 	 * @used-by \CanadaSatellite\Bambora\Method::authorize()
 	 * @used-by \CanadaSatellite\Bambora\Method::capture()

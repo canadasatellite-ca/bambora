@@ -50,7 +50,12 @@ abstract class Action {
 			$i = $this->ii(); /** @var II|I|OP $i */
 			$oq = $i->getOrder() ?: $i->getQuote();
 			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
-			dfp_report($this->m(), ['request' => $op->req(), 'response' => $res->a()]);
+			dfp_report(
+				$this->m()
+				,['request' => $op->req(), 'response' => $res->a()]
+				,df_cc(': ', df_class_l($this), $res->messageText())
+				,df_cc('-', $res->trnId(), $res->messageText())
+			);
 			df_error($res->reason());
 		}
 		return $op;
