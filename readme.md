@@ -22,7 +22,6 @@ bin/magento setup:static-content:deploy \
 bin/magento cache:clean
 bin/magento maintenance:disable
 sudo service cron start
-rm -rf var/log/*
 ```      
 
 ## How to upgrade
@@ -49,5 +48,4 @@ bin/magento setup:static-content:deploy \
 bin/magento cache:clean
 bin/magento maintenance:disable
 sudo service cron start
-rm -rf var/log/*
 ```
