@@ -1,6 +1,7 @@
 <?php
 namespace CanadaSatellite\Bambora;
 use CanadaSatellite\Bambora\Method as M;
+use CanadaSatellite\Bambora\Session as Sess;
 use Df\API\Operation;
 use Magento\Payment\Model\Info as I;
 use Magento\Payment\Model\InfoInterface as II;
@@ -46,7 +47,11 @@ abstract class Action {
 	 */
 	final protected function check(Operation $op) {
 		$res = $op->res(); /** @var Response $res */
-		if (!$res->trnApproved()) {
+		$s = Sess::s(); /** @var Sess $s */
+		if ($res->trnApproved()) {
+			$s->failedCount(0);
+		}
+		else {
 			$i = $this->ii(); /** @var II|I|OP $i */
 			$oq = $i->getOrder() ?: $i->getQuote();
 			$oq->addStatusToHistory($oq->getStatus(), $res->reason());
@@ -56,6 +61,10 @@ abstract class Action {
 				,df_cc(': ', df_class_l($this), $res->messageText())
 				,df_cc('-', $res->trnId(), $res->messageText())
 			);
+			$s->failedCount($c = 1 + $s->failedCount());
+			if (2 < $c) {
+				df_ban();
+			}
 			df_error($res->reason());
 		}
 		return $op;

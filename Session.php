@@ -3,13 +3,12 @@ namespace CanadaSatellite\Bambora;
 # 2021-10-28
 # "Temporary ban IP addresses of guest payers after 3 consecutive failed bank card payment attempts"
 # https://github.com/canadasatellite-ca/bambora/issues/14
-final class Session extends \Df\Core\Session {
+final class Session extends \Df\Customer\SessionBase {
 	/**
-	 * 2021-10-28
-	 * @override
-	 * @see \Df\Core\Session::c()
-	 * @used-by \Df\Core\Session::__construct()
-	 * @return string
+	 * 2021-10-31
+	 * @used-by \CanadaSatellite\Bambora\Action::check()
+	 * @param int|string $v [optional]
+	 * @return $this|int
 	 */
-	protected function c() {return 'Magento\Checkout\Model\Session\Storage';}
+	function failedCount($v = DF_N) {return df_prop($this, $v, 0);}
 }
