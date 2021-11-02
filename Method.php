@@ -4,8 +4,6 @@ use CanadaSatellite\Bambora\Action\Authorize;
 use CanadaSatellite\Bambora\Action\Capture;
 use CanadaSatellite\Bambora\Action\Refund;
 use CanadaSatellite\Bambora\Action\_Void;
-use CanadaSatellite\Bambora\Facade as F;
-use Df\API\Operation;
 use Magento\Framework\DataObject as _DO;
 use Magento\Framework\Exception\LocalizedException as LE;
 use Magento\Framework\ObjectManager\NoninterceptableInterface as INonInterceptable;
