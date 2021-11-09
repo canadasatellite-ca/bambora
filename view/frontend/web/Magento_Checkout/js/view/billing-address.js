@@ -2,6 +2,8 @@
 // 1) «Phone number must be between 7 and 32 characters long»: https://github.com/canadasatellite-ca/bambora/issues/15
 // 1) "`Amasty_Checkout`: prevent customers from entering obviously invalid phone numbers on the frontend checkout page":
 // https://github.com/canadasatellite-ca/site/issues/259
+// 2021-11-10
+// I have implemented it by analogy with https://github.com/magento/magento2/blob/2.4.3-p1/app/code/Magento/Checkout/view/frontend/web/js/model/billing-address-postcode-validator.js#L6-L82
 define([
 	'mage/translate', 'uiRegistry'
 ], function($t, uiRegistry) {'use strict'; return function(sb) {return sb.extend({
