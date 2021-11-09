@@ -18,16 +18,16 @@
 												<item name='payment' xsi:type='array'>
 													<item name='children' xsi:type='array'>
 														<item name='renders' xsi:type='array'>
-															<!-- merge payment method renders here -->
 															<item name='children' xsi:type='array'>
-																<item name='schogini-payments' xsi:type='array'>
-																	<item name='component' xsi:type='string'>CanadaSatellite_Bambora/js/view/payment/method-renderer</item>
-																	<item name='methods' xsi:type='array'>
-																		<item name='beanstream' xsi:type='array'>
-																			<item name='isBillingAddressRequired' xsi:type='boolean'>true</item>
-																		</item>
-																	</item>
-																</item>
+<!-- 2016-02-16 «How to specify a renderer for a payment menthod on the frontend checkout?» https://mage2.pro/t/725 -->
+<item name='CanadaSatellite_Bambora' xsi:type='array'>
+	<item name='component' xsi:type='string'>CanadaSatellite_Bambora/js/view/payment/method-renderer</item>
+	<item name='methods' xsi:type='array'>
+		<item name='beanstream' xsi:type='array'>
+			<item name='isBillingAddressRequired' xsi:type='boolean'>true</item>
+		</item>
+	</item>
+</item>
 															</item>
 														</item>
 													</item>
